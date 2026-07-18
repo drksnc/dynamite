@@ -22,6 +22,8 @@
 #include "DynamiteHook.h"
 #include "DynamiteLua.h"
 
+#include <signal.h>
+
 namespace Dynamite {
     void Dynamite::AbortHandler(int signal_number) {
         auto l = spdlog::get(logName);

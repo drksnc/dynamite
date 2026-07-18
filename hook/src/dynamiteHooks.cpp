@@ -8,7 +8,7 @@
 
 namespace Dynamite {
     void Dynamite::CreateDebugHooks() const {
-        spdlog::info("{}", __PRETTY_FUNCTION__);
+        spdlog::info("{}", __FUNCSIG__);
 
         if (cfg.debug.foxBlock) {
             CREATE_HOOK(FoxBlockUnload)
@@ -223,11 +223,11 @@ namespace Dynamite {
             ENABLEHOOK(FoxNtImplGameSocketImplGameSocketImplDtor)
         }
 
-        spdlog::info("{} done", __PRETTY_FUNCTION__);
+        spdlog::info("{} done", __FUNCSIG__);
     }
 
     void Dynamite::CreateHooks() const {
-        spdlog::info("{}", __PRETTY_FUNCTION__);
+        spdlog::info("{}", __FUNCSIG__);
 
         CreateDebugHooks();
 
@@ -389,7 +389,7 @@ namespace Dynamite {
             exit(1);
         }
 
-        spdlog::info("{}, done", __PRETTY_FUNCTION__);
+        spdlog::info("{}, done", __FUNCSIG__);
     }
 
 }

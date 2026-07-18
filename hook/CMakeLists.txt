@@ -54,11 +54,11 @@ endif()
 add_custom_command(
         OUTPUT
         ${CMAKE_CURRENT_BINARY_DIR}/__header.h  # fake! ensure we run!
-        COMMAND true
+		COMMAND ${CMAKE_COMMAND} -E true
 )
 
 add_custom_target(version
-        COMMAND rm -fv ${CMAKE_SOURCE_DIR}/src/Version.h
+        COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_SOURCE_DIR}/src/Version.h
         COMMAND ${CMAKE_COMMAND} -D SRC=${CMAKE_SOURCE_DIR}/src/Version.h.in
         -D DST=${CMAKE_SOURCE_DIR}/src/Version.h
         -P ${CMAKE_SOURCE_DIR}/GenerateVersion.cmake

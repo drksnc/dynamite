@@ -107,7 +107,7 @@ bool Config::Read(ConfigValidateResult *r) {
         }
 
         uint64_t steamID;
-        auto [ptr, ec] = std::from_chars(e.begin(), e.end(), steamID);
+        auto [ptr, ec] = std::from_chars(e.data(), e.data() + e.size(), steamID);
         if (ec == std::errc()) {
             this->blacklist.push_back(steamID);
         }
@@ -122,7 +122,7 @@ bool Config::Read(ConfigValidateResult *r) {
         }
 
         uint64_t steamID;
-        auto [ptr, ec] = std::from_chars(e.begin(), e.end(), steamID);
+        auto [ptr, ec] = std::from_chars(e.data(), e.data() + e.size(), steamID);
         if (ec == std::errc()) {
             this->whitelist.push_back(steamID);
         }

@@ -233,23 +233,23 @@ namespace Dynamite {
         const auto handle = BlockHeapAlloc(8, 8, MEMTAG_TPP_SYSTEM2SCRIPT);
         TppGmImplScriptSystemImplGetScriptDeclVarHandle(scriptSystemImpl, handle, catHash, hash);
         if (handle == nullptr) {
-            spdlog::error("{}, no handle for var {}.{}", __PRETTY_FUNCTION__, catName, varName);
+            spdlog::error("{}, no handle for var {}.{}", __FUNCSIG__, catName, varName);
             return s;
         }
 
         auto varType = *(unsigned char *)((char *)handle + 0xC) & 7;
         if (varType > TYPE_MAX) {
-            spdlog::error("{}, invalid var type {}.{} {}", __PRETTY_FUNCTION__, catName, varName, varType);
+            spdlog::error("{}, invalid var type {}.{} {}", __FUNCSIG__, catName, varName, varType);
             return s;
         }
 
         auto arraySize = *(unsigned short *)((char *)handle + 0x8);
         if (arraySize == 0) {
-            spdlog::error("{}, invalid var size {}.{}: {}", __PRETTY_FUNCTION__, catName, varName, arraySize);
+            spdlog::error("{}, invalid var size {}.{}: {}", __FUNCSIG__, catName, varName, arraySize);
             return s;
         }
 
-        spdlog::info("{}: {}, type {}, size {}", __PRETTY_FUNCTION__, varName, varType, arraySize);
+        spdlog::info("{}: {}, type {}, size {}", __FUNCSIG__, varName, varType, arraySize);
 
         auto elementSize = 1;
 
@@ -291,39 +291,39 @@ namespace Dynamite {
                 auto res = (*(unsigned char *)(((i + dataStart) >> 3) + offset) & 1 << ((unsigned char)(i + dataStart) & 7)) != 0;
                 s.bools.push_back(res);
 
-                spdlog::info("{}, {}, {}: {}", __PRETTY_FUNCTION__, varName, i, res);
+                spdlog::info("{}, {}, {}: {}", __FUNCSIG__, varName, i, res);
                 continue;
             }
 
             auto value = offset + (dataStart + i) * elementSize;
             switch (varType) {
             case TYPE_INT32:
-                spdlog::info("{}, {}, {}: {}", __PRETTY_FUNCTION__, varName, i, *(int32_t *)value);
+                spdlog::info("{}, {}, {}: {}", __FUNCSIG__, varName, i, *(int32_t *)value);
                 s.int32s.push_back(*(int32_t *)value);
                 break;
             case TYPE_UINT32: {
-                spdlog::info("{}, {} {}: {}", __PRETTY_FUNCTION__, varName, i, *(uint32_t *)value);
+                spdlog::info("{}, {} {}: {}", __FUNCSIG__, varName, i, *(uint32_t *)value);
                 s.uint32s.push_back(*(uint32_t *)value);
                 break;
             }
             case TYPE_FLOAT:
-                spdlog::info("{}, {} {}: {}", __PRETTY_FUNCTION__, varName, i, *(float *)value);
+                spdlog::info("{}, {} {}: {}", __FUNCSIG__, varName, i, *(float *)value);
                 s.floats.push_back(*(float *)value);
                 break;
             case TYPE_INT8:
-                spdlog::info("{}, {} {}: {:d}", __PRETTY_FUNCTION__, varName, i, *(signed char *)value);
+                spdlog::info("{}, {} {}: {:d}", __FUNCSIG__, varName, i, *(signed char *)value);
                 s.int8s.push_back(*(int8_t *)value);
                 break;
             case TYPE_UINT8:
-                spdlog::info("{}, {} {}: {}", __PRETTY_FUNCTION__, varName, i, *(unsigned char *)value);
+                spdlog::info("{}, {} {}: {}", __FUNCSIG__, varName, i, *(unsigned char *)value);
                 s.uint8s.push_back(*(uint8_t *)value);
                 break;
             case TYPE_INT16:
-                spdlog::info("{}, {} {}: {}", __PRETTY_FUNCTION__, varName, i, *(short *)value);
+                spdlog::info("{}, {} {}: {}", __FUNCSIG__, varName, i, *(short *)value);
                 s.int16s.push_back(*(int16_t *)value);
                 break;
             case TYPE_UINT16:
-                spdlog::info("{}, {} {}: {}", __PRETTY_FUNCTION__, varName, i, *(unsigned short *)value);
+                spdlog::info("{}, {} {}: {}", __FUNCSIG__, varName, i, *(unsigned short *)value);
                 s.uint16s.push_back(*(uint16_t *)value);
                 break;
             case TYPE_BOOL:
@@ -345,25 +345,25 @@ namespace Dynamite {
     void DynamiteCore::CreateEmblem(EmblemInfo info) {
         // prevent crash in tpp::gk::`anonymous_namespace'::EmblemManagerImplJob::UpdateRendering (0x14055ac0c)
         if (emblemCreated) {
-            spdlog::info("{}, cannot create two emblems in one session", __PRETTY_FUNCTION__);
+            spdlog::info("{}, cannot create two emblems in one session", __FUNCSIG__);
             return;
         }
 
         const auto emblemEditor = GetEmblemEditorSystemImpl();
         if (emblemEditor == nullptr) {
-            spdlog::error("{}, emblem editor is null", __PRETTY_FUNCTION__);
+            spdlog::error("{}, emblem editor is null", __FUNCSIG__);
             return;
         }
 
         const auto loadOk = TppUiEmblemImplEmblemEditorSystemImplLoadEmblemTextureInfo(emblemEditor);
         if (!loadOk) {
-            spdlog::warn("{}, load emblem texture info fail (but it's ok)", __PRETTY_FUNCTION__);
+            spdlog::warn("{}, load emblem texture info fail (but it's ok)", __FUNCSIG__);
         }
 
         uint64_t errcode = 0;
         const auto params = BlockHeapAlloc(1024, 8, MEMTAG_TPP_GK_EMBLEM);
         if (params == nullptr) {
-            spdlog::error("{}, malloc failed", __PRETTY_FUNCTION__);
+            spdlog::error("{}, malloc failed", __FUNCSIG__);
             return;
         }
 
@@ -382,7 +382,7 @@ namespace Dynamite {
             true);
 
         if (errcode != 0) {
-            spdlog::error("{}, TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters error code {}", __PRETTY_FUNCTION__, errcode);
+            spdlog::error("{}, TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters error code {}", __FUNCSIG__, errcode);
             BlockHeapFree(params);
             BlockHeapFree(ecode);
             return;
@@ -390,7 +390,7 @@ namespace Dynamite {
 
         const auto ready = TppUiEmblemImplEmblemEditorSystemImplIsReady(emblemEditor);
         if (!ready) {
-            spdlog::error("{}, emblem editor not ready", __PRETTY_FUNCTION__);
+            spdlog::error("{}, emblem editor not ready", __FUNCSIG__);
             return;
         }
 
@@ -400,7 +400,7 @@ namespace Dynamite {
         const auto hashSmall = FoxStrHash32(nameSmall, strlen(nameSmall)); // 0xd2ee491abe8f
 
         auto res = TppUiEmblemImplEmblemEditorSystemImplCreateEmblemHook(emblemEditor, hash, hashSmall, params, 4);
-        spdlog::info("{}, TppUiEmblemImplEmblemEditorSystemImplCreateEmblem res={}", __PRETTY_FUNCTION__, res);
+        spdlog::info("{}, TppUiEmblemImplEmblemEditorSystemImplCreateEmblem res={}", __FUNCSIG__, res);
 
         BlockHeapFree(params);
         BlockHeapFree(ecode);
@@ -410,15 +410,15 @@ namespace Dynamite {
     }
 
     void DynamiteCore::RemoveOpponentEmblemTexture() {
-        spdlog::info("{}", __PRETTY_FUNCTION__);
+        spdlog::info("{}", __FUNCSIG__);
         const auto emblemEditor = GetEmblemEditorSystemImpl();
         if (emblemEditor == nullptr) {
-            spdlog::error("{}, emblem editor is null", __PRETTY_FUNCTION__);
+            spdlog::error("{}, emblem editor is null", __FUNCSIG__);
             return;
         }
 
         if (!emblemCreated) {
-            spdlog::info("{}, but there was no emblem created", __PRETTY_FUNCTION__);
+            spdlog::info("{}, but there was no emblem created", __FUNCSIG__);
             return;
         }
 
@@ -448,7 +448,7 @@ namespace Dynamite {
         }
 
         nearestPlayerThread = std::jthread([this](const std::stop_token &stoken) {
-            spdlog::info("{}, starting", __PRETTY_FUNCTION__);
+            spdlog::info("{}, starting", __FUNCSIG__);
             while (!stoken.stop_requested()) {
                 auto opID = GetNearestPlayer();
                 if (cfg->debug.playerTarget) {
@@ -462,12 +462,12 @@ namespace Dynamite {
                 std::this_thread::sleep_for(500ms);
             }
 
-            spdlog::info("{}, stopping", __PRETTY_FUNCTION__);
+            spdlog::info("{}, stopping", __FUNCSIG__);
         });
     }
 
     void DynamiteCore::StopNearestEnemyThread() {
-        spdlog::info("{}", __PRETTY_FUNCTION__);
+        spdlog::info("{}", __FUNCSIG__);
         if (nearestPlayerThread.joinable()) {
             nearestPlayerThread.request_stop();
             nearestPlayerThread.join();
@@ -517,37 +517,37 @@ namespace Dynamite {
 
     unsigned short DynamiteCore::GetActiveEquipmentID(const uint32_t playerID) {
         if (hookState.equipControllerImpl == nullptr) {
-            spdlog::error("{}, equip controller impl is null", __PRETTY_FUNCTION__);
+            spdlog::error("{}, equip controller impl is null", __FUNCSIG__);
             return 0;
         }
 
-        spdlog::info("{}, {}", __PRETTY_FUNCTION__, hookState.equipControllerImpl);
+        spdlog::info("{}, {}", __FUNCSIG__, hookState.equipControllerImpl);
         auto base = *(uint64_t *)((char *)hookState.equipControllerImpl + 0x18);
         if (base == 0) {
-            spdlog::error("{}, base is null", __PRETTY_FUNCTION__);
+            spdlog::error("{}, base is null", __FUNCSIG__);
             return 0;
         }
 
         auto base1 = *(uint64_t *)(base + 0x60);
         if (base1 == 0) {
-            spdlog::error("{}, base1 is null", __PRETTY_FUNCTION__);
+            spdlog::error("{}, base1 is null", __FUNCSIG__);
             return 0;
         }
 
         auto base2 = *(uint64_t *)(base1 + 0xc0);
         if (base2 == 0) {
-            spdlog::error("{}, base2 is null", __PRETTY_FUNCTION__);
+            spdlog::error("{}, base2 is null", __FUNCSIG__);
             return 0;
         }
 
         const auto weaponsAddr = playerID * 0x3a + base2;
-        spdlog::info("{}, {}", __PRETTY_FUNCTION__, *(unsigned short *)weaponsAddr);
+        spdlog::info("{}, {}", __FUNCSIG__, *(unsigned short *)weaponsAddr);
         return *(unsigned short *)weaponsAddr;
     }
 
     unsigned short DynamiteCore::GetEquipIDInSlot(uint32_t playerID, uint32_t slotID, uint32_t index) {
         if (hookState.equipControllerImpl == nullptr) {
-            spdlog::error("{}, equip controller is nullptr", __PRETTY_FUNCTION__);
+            spdlog::error("{}, equip controller is nullptr", __FUNCSIG__);
             return 0;
         }
 
@@ -557,7 +557,7 @@ namespace Dynamite {
     void DynamiteCore::BossQuietSetNextActionTask(uint32_t param_1, BossQuietActionTask *actionTask, BossQuietNextActionTaskActionCondition actionType) const {
         if (cfg->debug.bossQuiet) {
             spdlog::info("{}, taskId={}, anotherType={}, param1={}, actionType={}",
-                __PRETTY_FUNCTION__,
+                __FUNCSIG__,
                 actionTask->actionType_0xac,
                 actionTask->anotherType_0xa8,
                 param_1,
