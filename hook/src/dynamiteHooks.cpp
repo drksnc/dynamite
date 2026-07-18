@@ -226,9 +226,11 @@ namespace Dynamite {
         spdlog::info("{} done", __FUNCSIG__);
     }
 
-    void Dynamite::CreateHooks() const {
+    void Dynamite::CreateHooks() 
+    {
         spdlog::info("{}", __FUNCSIG__);
 
+        CreateD3DHook();
         CreateDebugHooks();
 
         CREATE_HOOK(luaL_openlibs)
@@ -390,6 +392,35 @@ namespace Dynamite {
         }
 
         spdlog::info("{}, done", __FUNCSIG__);
+    }
+
+    void Dynamite::CreateD3DHook()
+    {
+        d3d11Hook = std::make_unique<D3D11Hook>();
+        d3d11Hook->on_present([this](D3D11Hook &hook) { OnFrame(); });
+        d3d11Hook->on_resize_buffers([this](D3D11Hook &hook) { OnReset(); });
+
+        d3dHooked = d3d11Hook->hook();
+
+        if (d3dHooked) {
+            spdlog::info("Hooked D3D11");
+        } else {
+            if (std::filesystem::exists("d3d11.dll")) {
+                std::wstring title = L"MGSTPP - Infinite Heaven IHHook";
+                std::wstring message = L"ERROR: Could not hook D3D11\n"
+                                       L"Unknown d3d11.dll in MGS_TPP folder\n"
+                    // DEBUGNOW L"If this is from the FOV Modifier dll you can remove it\n"
+                    // L"as IHHook now has it intergrated\n"
+                    ;
+                MessageBox(NULL, message.c_str(), title.c_str(), NULL);
+            } else {
+                std::wstring title = L"MGSTPP - Infinite Heaven IHHook";
+                std::wstring message = L"ERROR: Could not hook D3D11\n"
+                                       L"See ihhook_log.txt in MGS_TPP folder for details.\n";
+                MessageBox(NULL, message.c_str(), title.c_str(), NULL);
+            } // exists d3d11.dll
+
+        } // d3dHooked
     }
 
 }

@@ -82,6 +82,11 @@ namespace Dynamite {
     }
 
     Dynamite::Dynamite() : thisModule{GetModuleHandle(nullptr)} {
+        if (g_hook == nullptr)
+            g_hook = this;
+
+        menuOpenPrev = menuOpen;
+        
         signal(SIGABRT, &AbortHandler);
         terminate_Original = std::set_terminate(TerminateHandler);
         _set_abort_behavior(1, _WRITE_ABORT_MSG);

@@ -11,6 +11,8 @@
 #include "patch.h"
 #include "spdlog/logger.h"
 #include "windows.h"
+#include "D3D11Hook.hpp"
+#include "WindowsMessageHook.hpp"
 
 #include <eh.h>
 #include <filesystem>
@@ -34,13 +36,23 @@ namespace Dynamite {
 
         void RebaseAddresses();
 
-        void CreateHooks() const;
+        void CreateHooks();
 
         void CreateDebugHooks() const;
+
+        void CreateD3DHook();
 
         void ReadConfig();
 
         void SetFuncPtrs();
+
+        void OnFrame();
+
+        void OnReset();
+
+        bool OnMessage(HWND wnd, UINT message, WPARAM w_param, LPARAM l_param);
+
+        void ToggleDrawUI();
 
         static void AbortHandler(int signal_number);
 
@@ -59,11 +71,30 @@ namespace Dynamite {
         std::map<uint32_t, std::string> messageDict;
         std::map<uint64_t, std::string> pathDict;
       private:
+
+        void DrawUI();
+
+        bool FrameInitialize();
+        void CreateRenderTarget();
+        void CleanupRenderTarget();
+
         static constexpr uint64_t BaseAddr = 0x140000000;
         uint64_t RealBaseAddr = 0;
         HMODULE thisModule{nullptr};
+        HWND hwnd{};
         std::shared_ptr<spdlog::logger> log = nullptr;
-
+        std::unique_ptr<D3D11Hook> d3d11Hook{};
+        std::unique_ptr<WindowsMessageHook> windowsMessageHook;
+        ID3D11RenderTargetView *mainRenderTargetView{nullptr};
+         
+        // d3d11
+        bool firstFrame = true;
+        bool frameInitialized = false;
+        bool d3dHooked = false;
+        bool drawUI = true;
+        bool unlockCursor = false;
+        bool menuOpen = false; // tex start open, as it's used as a intro and error window during startup
+        bool menuOpenPrev;
     };
 }
 

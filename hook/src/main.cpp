@@ -10,11 +10,24 @@ extern HMODULE origDll; // dinputproxy
 
 #include "DynamiteHook.h"
 
+DWORD WINAPI InitThread(LPVOID lpParameter) {
+    new Dynamite::Dynamite;
+
+    return 0;
+} // InitThread
+
+
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
         g_thisModule = hModule;
-        Dynamite::g_hook = new Dynamite::Dynamite;
+
+        HANDLE hInitThread = CreateThread(nullptr, 0, InitThread, hModule, 0, nullptr);
+        if (hInitThread == NULL) {
+
+        } else {
+            CloseHandle(hInitThread);
+        }
 
     } else if (ul_reason_for_call == DLL_PROCESS_DETACH) {
         if (origDll) {
