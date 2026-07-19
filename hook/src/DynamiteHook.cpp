@@ -1397,7 +1397,7 @@ namespace Dynamite {
             return 2;
         }
 
-        if (type == 2 && g_hook->dynamiteCore.GetSessionConnected()) {
+        if (type == 2 && !g_hook->cfg.Host) {
             // Swap colors for client
             uint32_t res = TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject(param_1, gameObjectId);
             if (res == 1)
