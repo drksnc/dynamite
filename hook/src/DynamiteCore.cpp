@@ -8,6 +8,7 @@
 #include "memtag.h"
 #include "mgsvtpp_func_typedefs.h"
 #include "util.h"
+#include "lua/lua.h"
 
 #include <spdlog/spdlog.h>
 
@@ -602,6 +603,50 @@ namespace Dynamite {
 
             return;
         }
+    }
+
+    short DynamiteCore::GetCurrentMissionID()
+    {
+        lua_State *L = hookState.luaState;
+
+        lua_getglobal(L, "vars");
+        lua_getfield(L, -1, "missionCode");
+
+        short missionId = (short)lua_tonumber(L, -1);
+
+        lua_pop(L, 2);
+
+        return missionId;
+    }
+
+    std::string DynamiteCore::GetCurrentMissionName()
+    {
+        lua_State *L = hookState.luaState;
+
+        lua_getglobal(L, "TppMission");
+        lua_getfield(L, -1, "RegisterMissionID");
+
+        lua_pcall(L, 0, 0, 0);
+
+        lua_getglobal(L, "mvars");
+        lua_getfield(L, -1, "mis_missionName");
+
+        size_t sz;
+        const char *missionName = lua_tolstring(L, -1, &sz);
+        lua_pop(L, 2);
+
+        return missionName;
+    }
+
+    void DynamiteCore::LoadMission(short missionId)
+    {
+        lua_State *L = hookState.luaState;
+
+        lua_getglobal(L, "TppMission");
+        lua_getfield(L, -1, "LoadManually");
+        lua_pushinteger(L, missionId);
+
+        lua_pcall(L, 1, 0, 0);
     }
 
 }

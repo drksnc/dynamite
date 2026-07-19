@@ -154,6 +154,7 @@ namespace Dynamite {
 
             g_hook->dynamiteSyncImpl.Ping();
             g_hook->dynamiteSyncImpl.SendEmblem();
+            g_hook->dynamiteSyncImpl.SendRequestMission();
         }
 
         UpdateClientEstablished(param);
@@ -1407,5 +1408,30 @@ namespace Dynamite {
         }
 
         return TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject(param_1, gameObjectId);
+    }
+
+    static std::string ReadFileToString(const std::filesystem::path &path) {
+        std::ifstream file(path, std::ios::binary);
+
+        if (!file)
+            return {};
+
+        return std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    }
+
+    int luaL_loadbufferHook(lua_State* L, const char* buff, size_t sz, const char* name) 
+    {
+        std::string luaPath{name};
+        while (!luaPath.empty() && (luaPath[0] == '@' || luaPath[0] == '/' || luaPath[0] == '\\'))
+            luaPath.erase(0, 1);
+
+        std::filesystem::path path = std::filesystem::current_path() / "gamedata" / luaPath;
+        if (std::filesystem::exists(path))
+        {
+            std::string overridenLua = ReadFileToString(path);
+            return luaL_loadbuffer(L, overridenLua.c_str(), overridenLua.size(), name);
+        }
+
+        return luaL_loadbuffer(L, buff, sz, name);
     }
 }

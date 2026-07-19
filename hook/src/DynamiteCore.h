@@ -45,6 +45,9 @@ namespace Dynamite {
         static unsigned short GetActiveEquipmentID(uint32_t playerID);
         static unsigned short GetEquipIDInSlot(uint32_t playerID, uint32_t slotID, uint32_t index);
         void BossQuietSetNextActionTask(uint32_t param_1, BossQuietActionTask *actionTask, BossQuietNextActionTaskActionCondition actionType) const;
+        short GetCurrentMissionID();
+        std::string GetCurrentMissionName();
+        void LoadMission(short missionId);
 
       private:
         bool sessionCreated = false;

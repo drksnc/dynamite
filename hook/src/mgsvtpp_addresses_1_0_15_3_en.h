@@ -214,11 +214,17 @@ namespace Dynamite {
         {"luaL_openlibs", 0x14c1fd0c0},
         {"luaL_checknumber", 0x14c1ffb30},
         {"lua_toboolean", 0x14c1ebe40},
+        {"lua_tonumber", 0x14c1ecdd0},
+        {"lua_tolstring", 0x14c1eca70},
         {"lua_createtable", 0x14c1d6320},
         {"lua_pushvalue", 0x14c1e87e0},
+        {"lua_pushnil", 0x14c1e7cc0},
         {"lua_remove", 0x14c1ea0c0},
         {"luaL_checklstring", 0x14c1ff790},
         {"lua_pushnumber", 0x14c1e7dd0},
+        {"lua_type", 0x14c1ed760},
+        {"lua_settop", 0x14c1ebbe0},
+        {"luaL_loadbuffer", 0x14c200f90},
 
         // /*
         //                 {"StrCode64", 0x14c1bd730},

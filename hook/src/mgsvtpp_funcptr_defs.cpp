@@ -11,11 +11,17 @@ luaL_checkintegerFunc *luaL_checkinteger;
 lua_pushbooleanFunc *lua_pushboolean;
 luaL_checknumberFunc *luaL_checknumber;
 lua_tobooleanFunc *lua_toboolean;
+lua_tonumberFunc *lua_tonumber;
+lua_tolstringFunc *lua_tolstring;
 lua_createtableFunc *lua_createtable;
 lua_pushvalueFunc *lua_pushvalue;
+lua_pushnilFunc* lua_pushnil;
 lua_removeFunc *lua_remove;
 luaL_checklstringFunc *luaL_checklstring;
 lua_pushnumberFunc *lua_pushnumber;
+lua_typeFunc *lua_type;
+lua_settopFunc *lua_settop;
+luaL_loadbufferFunc *luaL_loadbuffer;
 
 IsDefenseTeamByOnlineFobLocalFunc *IsDefenseTeamByOnlineFobLocal;
 IsOffenseTeamByOnlineFobLocalFunc *IsOffenseTeamByOnlineFobLocal;

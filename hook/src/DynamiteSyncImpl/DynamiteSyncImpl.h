@@ -85,6 +85,12 @@ namespace Dynamite {
         void SendBossQuietDamage(BossQuietDamage *damage);
         void HandleSendBossQuietDamage(const DynamiteMessage::MessageWrapper *w);
 
+        void SendMission(short missionId);
+        void HandleSendMission(const DynamiteMessage::MessageWrapper *w);
+
+        void SendRequestMission();
+        static void HandleSendRequestMission(const DynamiteMessage::MessageWrapper *w);
+
         void *steamUDPAddress = nullptr;
         void *steamUDPSocketInfo = nullptr;
         void *steamUDPSocket = nullptr;

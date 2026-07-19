@@ -10,6 +10,7 @@
 #include "mgsvtpp_func_typedefs.h"
 #include "spdlog/spdlog.h"
 #include "util.h"
+#include "DynamiteLua.h"
 
 #include <ranges>
 #include <vector>
@@ -1083,6 +1084,43 @@ namespace Dynamite {
         hookState.incomingBossQuietDamage.currentStamina = m->current_stamina();
     }
 
+    void DynamiteSyncImpl::SendMission(short missionId) 
+    {
+        packetNumber++;
+        flatbuffers::FlatBufferBuilder builder(2);
+        const auto sv = DynamiteMessage::CreateSendMission(builder, missionId);
+        const auto message = DynamiteMessage::CreateMessageWrapper(builder, packetNumber, DynamiteMessage::Message_SendMission, sv.Union());
+        builder.Finish(message);
+        auto res = SendRaw(&builder);
+        spdlog::info("{}, res {}", __FUNCSIG__, res);
+    }
+
+    void DynamiteSyncImpl::HandleSendMission(const DynamiteMessage::MessageWrapper *w) 
+    {
+        const auto m = w->msg_as_SendMission();     
+        g_hook->dynamiteCore.LoadMission(m->missionId());
+    }
+
+    void DynamiteSyncImpl::SendRequestMission() 
+    {
+        packetNumber++;
+        flatbuffers::FlatBufferBuilder builder(1);
+        const auto sv = DynamiteMessage::CreateSendMissionRequest(builder);
+        const auto message = DynamiteMessage::CreateMessageWrapper(builder, packetNumber, DynamiteMessage::Message_SendMissionRequest, sv.Union());
+        builder.Finish(message);
+        auto res = SendRaw(&builder);
+        spdlog::info("{}, res {}", __FUNCSIG__, res);
+    }
+
+    void DynamiteSyncImpl::HandleSendRequestMission(const DynamiteMessage::MessageWrapper *w) 
+    {
+        if (!g_hook->dynamiteCore.GetHostSessionCreated())
+            return;
+
+        const short missionId = g_hook->dynamiteCore.GetCurrentMissionID();
+        g_hook->dynamiteSyncImpl.SendMission(missionId);
+    }
+
     // sends data over GameSocket, unused and deprecated
     bool DynamiteSyncImpl::Send(const flatbuffers::FlatBufferBuilder *builder) const {
         if (this->gameSocket == nullptr) {
@@ -1272,6 +1310,12 @@ namespace Dynamite {
             break;
         case DynamiteMessage::Message_SendBossQuietDamage:
             HandleSendBossQuietDamage(wrapper);
+            break;
+        case DynamiteMessage::Message_SendMission:
+            HandleSendMission(wrapper);
+            break;
+        case DynamiteMessage::Message_SendMissionRequest:
+            HandleSendRequestMission(wrapper);
             break;
         default:
             spdlog::error("{}, unknown message type {}", __FUNCSIG__, static_cast<uint32_t>(wrapper->msg_type()));

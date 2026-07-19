@@ -192,6 +192,8 @@ namespace Dynamite {
 
     void FoxUiModelNodeSetColorAHook(__m128 *a1, double newAlpha);
     uint32_t TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectHook(void *param_1, uint16_t gameObjectId);
+
+    int luaL_loadbufferHook(lua_State *L, const char *buff, size_t sz, const char *name);
 }
 
 #endif // HOOK_DYNAMITEHOOK_H

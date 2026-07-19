@@ -26,6 +26,10 @@ typedef void(__fastcall lua_pushbooleanFunc)(lua_State *L, int b);
 
 typedef void(__fastcall lua_pushnumberFunc)(lua_State *L, lua_Number n);
 
+typedef int(__fastcall lua_typeFunc)(lua_State *L, int idx);
+
+typedef void(__fastcall lua_settopFunc)(lua_State *L, int idx);
+
 typedef bool(__fastcall IsDefenseTeamByOnlineFobLocalFunc)();
 
 typedef bool(__fastcall IsOffenseTeamByOnlineFobLocalFunc)();
@@ -96,13 +100,21 @@ typedef int *(FoxBlockLoadFunc)(void *thisPtr, int *errorCode, uint64_t *pathID,
 
 typedef int(lua_tobooleanFunc)(lua_State *L, int idx);
 
+typedef lua_Number(__fastcall lua_tonumberFunc)(lua_State *L, int idx);
+
+typedef char *(lua_tolstringFunc)(lua_State *L, int idx, size_t *len);
+
 typedef void(lua_createtableFunc)(lua_State *L, int narray, int nrec);
 
 typedef void(lua_pushvalueFunc)(lua_State *L, int index);
 
+typedef void(__fastcall lua_pushnilFunc)(lua_State *L);
+
 typedef void(lua_removeFunc)(lua_State *L, int index);
 
 typedef char *(__fastcall luaL_checklstringFunc)(lua_State *L, int numArg, size_t *l);
+
+typedef int(__fastcall luaL_loadbufferFunc)(lua_State *L, const char *buff, size_t sz, const char *name);
 
 /*
 enum fox::PropertyInfo::Type,
@@ -466,11 +478,17 @@ extern luaL_checkintegerFunc *luaL_checkinteger;
 extern lua_pushbooleanFunc *lua_pushboolean;
 extern luaL_checknumberFunc *luaL_checknumber;
 extern lua_tobooleanFunc *lua_toboolean;
+extern lua_tonumberFunc *lua_tonumber;
+extern lua_tolstringFunc *lua_tolstring;
 extern lua_createtableFunc *lua_createtable;
 extern lua_pushvalueFunc *lua_pushvalue;
+extern lua_pushnilFunc *lua_pushnil;
 extern lua_removeFunc *lua_remove;
 extern luaL_checklstringFunc *luaL_checklstring;
 extern lua_pushnumberFunc *lua_pushnumber;
+extern lua_typeFunc *lua_type;
+extern lua_settopFunc *lua_settop;
+extern luaL_loadbufferFunc *luaL_loadbuffer;
 
 // tpp lua functions (TppUiCommand.AnnounceLogView)
 extern lua_CFunction l_AnnounceLogView;

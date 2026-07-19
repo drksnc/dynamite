@@ -362,6 +362,9 @@ namespace Dynamite {
         CREATE_HOOK(TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject)
         ENABLEHOOK(TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject)
 
+        CREATE_HOOK(luaL_loadbuffer)
+        ENABLEHOOK(luaL_loadbuffer)
+
         // clang-format off
         {
             // these must go together to keep track of bytes written

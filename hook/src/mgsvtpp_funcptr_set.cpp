@@ -15,10 +15,16 @@ namespace Dynamite {
         lua_pushboolean = (lua_pushbooleanFunc *)addressSet["lua_pushboolean"];
         luaL_checknumber = (luaL_checknumberFunc *)addressSet["luaL_checknumber"];
         lua_toboolean = (lua_tobooleanFunc *)addressSet["lua_toboolean"];
+        lua_tonumber = (lua_tonumberFunc *)addressSet["lua_tonumber"];
+        lua_tolstring = (lua_tolstringFunc *)addressSet["lua_tolstring"];
         lua_createtable = (lua_createtableFunc *)addressSet["lua_createtable"];
         lua_pushvalue = (lua_pushvalueFunc *)addressSet["lua_pushvalue"];
+        lua_pushnil = (lua_pushnilFunc *)addressSet["lua_pushnil"];
         luaL_checklstring = (luaL_checklstringFunc *)addressSet["luaL_checklstring"];
         lua_pushnumber = (lua_pushnumberFunc *)addressSet["lua_pushnumber"];
+        lua_type = (lua_typeFunc *)addressSet["lua_type"];
+        lua_settop = (lua_settopFunc *)addressSet["lua_settop"];
+        luaL_loadbuffer = (luaL_loadbufferFunc *)addressSet["luaL_loadbuffer"];
 
         IsDefenseTeamByOnlineFobLocal = (IsDefenseTeamByOnlineFobLocalFunc *)addressSet["IsDefenseTeamByOnlineFobLocal"];
         IsOffenseTeamByOnlineFobLocal = (IsOffenseTeamByOnlineFobLocalFunc *)addressSet["IsOffenseTeamByOnlineFobLocal"];
