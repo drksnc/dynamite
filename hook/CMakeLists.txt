@@ -42,6 +42,7 @@ FetchContent_MakeAvailable(flatbuffers)
 
 include_directories(
         src/
+		include/imgui/
 )
 
 SET(LUA_COMPAT_OPENLIB 1)
@@ -66,29 +67,52 @@ add_custom_target(version
 )
 
 add_library(${PROJECT_NAME} SHARED
-        src/mgsvtpp_funcptr_defs.cpp
-        src/mgsvtpp_funcptr_set.cpp
-        src/Tpp/GameObject.cpp
-        src/Tpp/TppSoldier2.cpp
-        src/DynamiteSyncImpl/DynamiteSyncImpl.cpp
-        src/Config.cpp
-        src/Messagebox.cpp
-        src/patch.cpp
-        src/Tpp/TppTypes.cpp
-        src/util.cpp
-
-        src/dynamiteHooks.cpp
-        src/dynamitePatches.cpp
-        src/DynamiteCore.cpp
-        src/dynamite.cpp
-        src/DynamiteLua.cpp
-        src/DynamiteHook.cpp
-        src/main.cpp
-        src/DInputProxy.cpp
+		src/mgsvtpp_funcptr_defs.cpp
+		src/mgsvtpp_funcptr_set.cpp
+		src/Tpp/GameObject.cpp
+		src/Tpp/TppSoldier2.cpp
+		src/DynamiteSyncImpl/DynamiteSyncImpl.cpp
+		src/Config.cpp
+		src/Messagebox.cpp
+		src/patch.cpp
+		src/Tpp/TppTypes.cpp
+		src/util.cpp
+		
+		src/D3D11Hook.cpp
+		src/dynamiteHooks.cpp
+		src/dynamitePatches.cpp
+		src/DynamiteCore.cpp
+		src/dynamite.cpp
+		src/DynamiteLua.cpp
+		src/DynamiteHook.cpp
+		src/DynamiteSteam.cpp
+		src/DynamiteImGUI.cpp
+		src/main.cpp
+		src/DInputProxy.cpp
+		src/WindowsMessageHook.cpp
+		src/RawInput.cpp
+		
+		src/utility/Address.cpp
+		src/utility/FunctionHook.cpp
+		
+		src/imgui/imgui.cpp
+		src/imgui/imgui_demo.cpp
+		src/imgui/imgui_draw.cpp
+		src/imgui/imgui_widgets.cpp
+		
+		src/imguiimpl/imgui_impl_dx11.cpp
+		src/imguiimpl/imgui_impl_win32.cpp
 )
 
 add_dependencies(${PROJECT_NAME} version)
 
-target_compile_options(${PROJECT_NAME} PUBLIC -fpermissive)
+target_compile_options(${PROJECT_NAME} PUBLIC 
+		$<$<CXX_COMPILER_ID:GNU>:-fpermissive>
+		$<$<CXX_COMPILER_ID:MSVC>:/MP /permissive->
+)
+target_compile_definitions(${PROJECT_NAME} PUBLIC
+    UNICODE
+    _UNICODE
+)
 target_link_options(${PROJECT_NAME} PUBLIC -static)
-target_link_libraries(${PROJECT_NAME} flatbuffers minhook mINI spdlog::spdlog_header_only)
+target_link_libraries(${PROJECT_NAME} flatbuffers minhook mINI spdlog::spdlog_header_only d3d11)

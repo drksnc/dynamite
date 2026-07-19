@@ -359,9 +359,6 @@ namespace Dynamite {
         CREATE_HOOK(TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLife)
         ENABLEHOOK(TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLife)
 
-        CREATE_HOOK(FoxUiModelNodeSetColorA)
-        ENABLEHOOK(FoxUiModelNodeSetColorA)
-
         CREATE_HOOK(TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject)
         ENABLEHOOK(TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject)
 
