@@ -21,6 +21,7 @@
 
 #include "DynamiteHook.h"
 #include "DynamiteLua.h"
+#include "DynamiteSteam.h"
 
 #include <signal.h>
 
@@ -113,6 +114,7 @@ namespace Dynamite {
         SetFuncPtrs();
         ReadConfig();
         CreateHooks();
+        LoadSteam();
         dynamiteCore.WithConfig(&cfg);
     }
 

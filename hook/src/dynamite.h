@@ -74,6 +74,9 @@ namespace Dynamite {
 
         void DrawUI();
 
+        void DrawMenu();
+        void DrawClientMenu();
+
         bool FrameInitialize();
         void CreateRenderTarget();
         void CleanupRenderTarget();
