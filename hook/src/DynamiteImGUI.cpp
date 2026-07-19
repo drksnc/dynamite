@@ -71,6 +71,17 @@ namespace Dynamite {
 
     void Dynamite::DrawClientMenu()
     {
+        ImGui::Text("Status: ");
+        ImGui::SameLine();
+        if (g_hook->dynamiteCore.GetSessionCreated()) {
+            g_hook->dynamiteCore.GetSessionConnected() ? ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, "Connected")
+                                                       : ImGui::TextColored({1.0f, 1.0f, 0.0f, 1.0f}, "Connecting...");
+        }
+        else
+        {
+            ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, "Disconnected");
+        }
+
         const int friendsCount = GetSteamFriendsCount();
         static uint64_t selectedFriendSteamId = 0;
         uint64_t prevSelectedFriendSteamId = selectedFriendSteamId;

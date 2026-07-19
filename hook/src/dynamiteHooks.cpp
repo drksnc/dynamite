@@ -359,6 +359,12 @@ namespace Dynamite {
         CREATE_HOOK(TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLife)
         ENABLEHOOK(TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLife)
 
+        CREATE_HOOK(FoxUiModelNodeSetColorA)
+        ENABLEHOOK(FoxUiModelNodeSetColorA)
+
+        CREATE_HOOK(TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject)
+        ENABLEHOOK(TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject)
+
         // clang-format off
         {
             // these must go together to keep track of bytes written

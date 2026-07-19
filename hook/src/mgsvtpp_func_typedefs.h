@@ -451,6 +451,9 @@ typedef void *(__thiscall TppGmImplAiControllerImplGetCoreKnowledgeFunc)(void *A
 typedef void(__thiscall TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLifeFunc)(
     void *LifeControllerImpl, TppGmBossquietLifeControllerWork *work, uint32_t entityIndex, float param_3);
 
+typedef void(__thiscall FoxUiModelNodeSetColorAFunc)(__m128 *a1, double newAlpha);
+typedef uint32_t(__thiscall TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectFunc)(void *param_1, uint16_t gameObjectId);
+
 // lua library functions
 extern luaI_openlibFunc *luaI_openlib;
 extern luaL_openlibsFunc *luaL_openlibs;
@@ -658,4 +661,7 @@ extern TppGmBossquietImplCloseCombatAiImplRequestMoveActionFunc *TppGmBossquietI
 extern TppGmBossquietImplAvoidAiImplSetJumpPointFunc *TppGmBossquietImplAvoidAiImplSetJumpPoint;
 extern TppGmImplAiControllerImplGetCoreKnowledgeFunc *TppGmImplAiControllerImplGetCoreKnowledge;
 extern TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLifeFunc *TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLife;
+
+extern FoxUiModelNodeSetColorAFunc *FoxUiModelNodeSetColorA;
+extern TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectFunc *TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject;
 #endif // HOOK_MGSVTPP_FUNC_TYPEDEFS_H

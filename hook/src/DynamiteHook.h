@@ -189,6 +189,9 @@ namespace Dynamite {
     bool TppGmBossquietImplCloseCombatAiImplRequestMoveActionHook(void *CloseCombatAiImpl, uint32_t param_1, void *Work);
     void TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLifeHook(
         void *LifeControllerImpl, TppGmBossquietLifeControllerWork *work, uint32_t entityIndex, float param_3);
+
+    void FoxUiModelNodeSetColorAHook(__m128 *a1, double newAlpha);
+    uint32_t TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectHook(void *param_1, uint16_t gameObjectId);
 }
 
 #endif // HOOK_DYNAMITEHOOK_H

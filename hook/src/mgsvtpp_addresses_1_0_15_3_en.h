@@ -198,6 +198,11 @@ namespace Dynamite {
         {"l_AnnounceLogView", 0x145d5ded0},
         {"TppUiUiCommandAnnounceLogViewLangId", 0x1408cc280},
 
+        //{"ColorCrosshair0", 0x14d71d0c0},
+        //{"ColorCrosshair1", 0x14D71D220},
+        //{"FoxUiModelNodeSetColorA", 0x14D71CFA0},
+        {"TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject", 0x140fe7a80},
+
         {"lua_pushinteger", 0x14c1e6ef0},
         {"lua_pushstring", 0x14c1e7ee0},
         {"lua_pushboolean", 0x14c1db230},

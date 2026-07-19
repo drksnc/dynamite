@@ -1370,4 +1370,42 @@ namespace Dynamite {
             hookState.incomingBossQuietDamage.entityIndex = -1;
         }
     }
+
+    typedef union {
+        __m128 v;
+        float f[4];
+    } vec4;
+
+    //fox::ui::ModelNode::SetColorA
+
+    void FoxUiModelNodeSetColorAHook(__m128 *a1, double newAlpha) {
+        vec4 *color = (vec4 *)&a1[5];
+        float alpha = *(float *)&newAlpha;
+        color->f[3] = alpha;
+    }
+
+    //tpp::gm::player::impl::UiControllerImpl::GetReticleColorTypeOfGameObject
+
+    uint32_t TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectHook(void *param_1, uint16_t gameObjectId)
+    {
+        uint16_t type = gameObjectId >> 9;
+
+        if (type == 0)
+        {
+            // Another player is always friend for client
+            return 2;
+        }
+
+        if (type == 2 && g_hook->dynamiteCore.GetSessionConnected()) {
+            // Swap colors for client
+            uint32_t res = TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject(param_1, gameObjectId);
+            if (res == 1)
+                return 2;
+
+            if (res == 2)
+                return 1;
+        }
+
+        return TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject(param_1, gameObjectId);
+    }
 }
