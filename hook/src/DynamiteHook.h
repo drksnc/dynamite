@@ -196,7 +196,8 @@ namespace Dynamite {
     int luaL_loadbufferHook(lua_State *L, const char *buff, size_t sz, const char *name);
     int luaL_loadfileHook(lua_State *L, const char *filename);
 
-    void FoxCCCharacterControlUpdatePositionHook(__m128 *this_, __m128 *outPosition, __m128 *delta);
+    void FoxCCCharacterControlUpdatePositionHook(void *this_, __m128 *outPosition, __m128 *delta);
+    __int64 SetGameObjectIdToCharaControlHook(void *_this, int a2, unsigned __int16 a3);
 }
 
 #endif // HOOK_DYNAMITEHOOK_H

@@ -349,7 +349,7 @@ typedef int32_t(__thiscall FoxNioImplSteamUdpSocketImplSendFunc)(void *SteamUdpS
 
 typedef int32_t(__thiscall FoxNioImplSteamUdpSocketImplRecvFunc)(void *SteamUdpSocketImpl, void *buffer, int size, void *SocketInfo, void *Address);
 
-typedef void(__thiscall FoxCCCharacterControlUpdatePositionFunc)(__m128 *object, __m128 *outPoisitiom, __m128 *delta);
+typedef void(__thiscall FoxCCCharacterControlUpdatePositionFunc)(void *object, __m128 *outPoisitiom, __m128 *delta);
 
 typedef void *SteamNetworkingFunc();
 
@@ -469,6 +469,7 @@ typedef void(__thiscall TppGmBossquietImplanonymous_namespaceLifeControllerImplU
 
 typedef void(__thiscall FoxUiModelNodeSetColorAFunc)(__m128 *a1, double newAlpha);
 typedef uint32_t(__thiscall TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectFunc)(void *param_1, uint16_t gameObjectId);
+typedef __int64(__thiscall SetGameObjectIdToCharaControlFunc)(void *_this, int a2, unsigned __int16 a3);
 
 // lua library functions
 extern luaI_openlibFunc *luaI_openlib;
@@ -688,4 +689,5 @@ extern TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLifeFunc *Tp
 
 extern FoxUiModelNodeSetColorAFunc *FoxUiModelNodeSetColorA;
 extern TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectFunc *TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject;
+extern SetGameObjectIdToCharaControlFunc *SetGameObjectIdToCharaControl;
 #endif // HOOK_MGSVTPP_FUNC_TYPEDEFS_H

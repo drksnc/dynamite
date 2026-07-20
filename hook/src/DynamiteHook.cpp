@@ -1440,14 +1440,41 @@ namespace Dynamite {
         return luaL_loadfile(L, filename);
     }
 
-    void FoxCCCharacterControlUpdatePositionHook(__m128 *this_, __m128 *outPosition, __m128 *delta) {
+    std::map<char*,uint16_t> g_CharaMap;
+
+    void FoxCCCharacterControlUpdatePositionHook(void *this_, __m128 *outPosition, __m128 *delta) {
         Vector3 *pPositionVec = (Vector3 *)outPosition;
         Vector3 *pDeltaVec = (Vector3 *)delta;
         
-        //pPositionVec->x = 0.0f;
-        //pPositionVec->y = 0.0f;
-        //pPositionVec->z = 0.0f;
+        Vector3 pPlayerPos = g_hook->dynamiteCore.GetPlayerPosition(0);
 
+        uint16_t gameObjectId = -1;
+        for (const auto& it : g_CharaMap)
+        {
+            if ((uint16_t)((char *)this_ - 3320) == it.second) {
+               gameObjectId = it.second;
+               break;
+            }
+        }
+
+        //auto go = FindGameObjectWithID(gameObjectId);
+        //if (go == nullptr) {
+        //    spdlog::info("cant find object");
+        //}
+        //spdlog::info("gameObjectId: {}", gameObjectId);
         FoxCCCharacterControlUpdatePosition(this_, outPosition, delta);
+
+        //pPositionVec->x = pPlayerPos.x;
+        //pPositionVec->y = pPlayerPos.y;
+        //pPositionVec->z = pPlayerPos.z;
+    }
+
+    __int64 SetGameObjectIdToCharaControlHook(void *_this, int a2, unsigned __int16 a3) {
+        if (g_CharaMap.find((char*)_this) != g_CharaMap.end())
+            g_CharaMap.at((char *)_this) = a3;
+        else
+            g_CharaMap.insert({(char*)_this, a3});
+
+        return SetGameObjectIdToCharaControl(_this, a2, a3);
     }
 }

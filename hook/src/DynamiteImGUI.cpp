@@ -144,12 +144,12 @@ namespace Dynamite {
         if (g_hook->dynamiteCore.GetSessionCreated())
         {
             if (ImGui::Button("Cancel Connection"))
-                l_ResetClientSessionStateWithNotification(hookState.luaState);
+                g_hook->dynamiteCore.AddUIEvent(Event::ResetConnect);
         } 
         else 
         {
             if (ImGui::Button("Connect"))
-                l_CreateClientSession(hookState.luaState);
+                g_hook->dynamiteCore.AddUIEvent(Event::Connect);
         }
     }
 
@@ -335,6 +335,12 @@ namespace Dynamite {
             break;
         case Event::TestFunction:
             g_hook->dynamiteCore.TestFunction();
+            break;
+        case Event::Connect:
+            l_CreateClientSession(hookState.luaState);
+            break;
+        case Event::ResetConnect:
+            l_ResetClientSessionStateWithNotification(hookState.luaState);
             break;
         }
     }

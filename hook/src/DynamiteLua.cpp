@@ -16,8 +16,6 @@ namespace Dynamite {
             return 0;
         }
 
-        return 0;
-
         FobTarget *ft = (FobTarget *)hookState.fobTargetCtor;
         SessionConnectInfo *connectInfo = nullptr;
         bool bFreeMem = false;

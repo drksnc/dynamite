@@ -7,7 +7,9 @@
 enum class Event {
     None = 0,
     LoadMission,
-    TestFunction
+    TestFunction,
+    Connect,
+    ResetConnect
 };
 
 class EventStack {

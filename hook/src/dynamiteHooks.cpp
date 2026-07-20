@@ -316,6 +316,9 @@ namespace Dynamite {
         CREATE_HOOK(FoxCCCharacterControlUpdatePosition)
         ENABLEHOOK(FoxCCCharacterControlUpdatePosition)
 
+        CREATE_HOOK(SetGameObjectIdToCharaControl)
+        ENABLEHOOK(SetGameObjectIdToCharaControl)
+
         CREATE_HOOK(TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters)
         ENABLEHOOK(TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters)
 
