@@ -116,6 +116,8 @@ typedef char *(__fastcall luaL_checklstringFunc)(lua_State *L, int numArg, size_
 
 typedef int(__fastcall luaL_loadbufferFunc)(lua_State *L, const char *buff, size_t sz, const char *name);
 
+typedef int(__fastcall luaL_loadFileFunc)(lua_State *L, const char *filename);
+
 /*
 enum fox::PropertyInfo::Type,
 class fox::String const & __ptr64,
@@ -489,6 +491,7 @@ extern lua_pushnumberFunc *lua_pushnumber;
 extern lua_typeFunc *lua_type;
 extern lua_settopFunc *lua_settop;
 extern luaL_loadbufferFunc *luaL_loadbuffer;
+extern luaL_loadFileFunc *luaL_loadfile;
 
 // tpp lua functions (TppUiCommand.AnnounceLogView)
 extern lua_CFunction l_AnnounceLogView;

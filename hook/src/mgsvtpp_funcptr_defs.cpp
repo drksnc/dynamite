@@ -22,6 +22,7 @@ lua_pushnumberFunc *lua_pushnumber;
 lua_typeFunc *lua_type;
 lua_settopFunc *lua_settop;
 luaL_loadbufferFunc *luaL_loadbuffer;
+luaL_loadFileFunc *luaL_loadfile;
 
 IsDefenseTeamByOnlineFobLocalFunc *IsDefenseTeamByOnlineFobLocal;
 IsOffenseTeamByOnlineFobLocalFunc *IsOffenseTeamByOnlineFobLocal;

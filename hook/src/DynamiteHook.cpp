@@ -1425,7 +1425,7 @@ namespace Dynamite {
         while (!luaPath.empty() && (luaPath[0] == '@' || luaPath[0] == '/' || luaPath[0] == '\\'))
             luaPath.erase(0, 1);
 
-        std::filesystem::path path = std::filesystem::current_path() / "gamedata" / luaPath;
+        std::filesystem::path path = std::filesystem::current_path() / "lua" / luaPath;
         if (std::filesystem::exists(path))
         {
             std::string overridenLua = ReadFileToString(path);
@@ -1433,5 +1433,10 @@ namespace Dynamite {
         }
 
         return luaL_loadbuffer(L, buff, sz, name);
+    }
+
+    int luaL_loadfileHook(lua_State* L, const char* filename) 
+    {
+        return luaL_loadfile(L, filename);
     }
 }

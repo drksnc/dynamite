@@ -16,10 +16,19 @@ namespace Dynamite {
             return 0;
         }
 
-        if (hookState.fobTargetCtor == nullptr) {
-            spdlog::info("{}, fob target ctor is null", __FUNCSIG__);
+        FobTarget *ft = (FobTarget *)hookState.fobTargetCtor;
+        SessionConnectInfo *connectInfo = nullptr;
+        bool bFreeMem = false;
+        if (ft == nullptr) {
+            bFreeMem = true;
+            ft = (FobTarget *)BlockHeapAlloc(sizeof(FobTarget), 8, MEMTAG_NULL);
+            connectInfo = (SessionConnectInfo *)BlockHeapAlloc(sizeof(SessionConnectInfo), 8, MEMTAG_NULL);
+            char test = 3;
+            ft->sessionConnectInfo = connectInfo;
+            ft->sessionConnectInfo->targetIPCString = &test;
 
-            return 0;
+            spdlog::info("{}, fob target ctor is null", __FUNCSIG__);
+            hookState.fobTargetCtor = ft;
         }
 
         if (g_hook->dynamiteCore.GetHostSessionCreated()) {
@@ -35,6 +44,12 @@ namespace Dynamite {
         }
 
         auto res = CreateHostSession((FobTarget *)hookState.fobTargetCtor);
+
+        if (bFreeMem) {
+            BlockHeapFree(ft);
+            BlockHeapFree(connectInfo);
+        }
+
         spdlog::info("{}, host session res: {}", __FUNCSIG__, res);
 
         g_hook->dynamiteCore.SetHostSessionCreated(res > 0);

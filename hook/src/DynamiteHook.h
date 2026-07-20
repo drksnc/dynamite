@@ -194,6 +194,7 @@ namespace Dynamite {
     uint32_t TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectHook(void *param_1, uint16_t gameObjectId);
 
     int luaL_loadbufferHook(lua_State *L, const char *buff, size_t sz, const char *name);
+    int luaL_loadfileHook(lua_State *L, const char *filename);
 }
 
 #endif // HOOK_DYNAMITEHOOK_H

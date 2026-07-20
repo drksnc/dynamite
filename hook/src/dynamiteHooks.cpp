@@ -230,7 +230,6 @@ namespace Dynamite {
     {
         spdlog::info("{}", __FUNCSIG__);
 
-        CreateD3DHook();
         CreateDebugHooks();
 
         CREATE_HOOK(luaL_openlibs)
@@ -364,6 +363,9 @@ namespace Dynamite {
 
         CREATE_HOOK(luaL_loadbuffer)
         ENABLEHOOK(luaL_loadbuffer)
+
+        CREATE_HOOK(luaL_loadfile)
+        ENABLEHOOK(luaL_loadfile)
 
         // clang-format off
         {

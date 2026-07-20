@@ -25,6 +25,7 @@ namespace Dynamite {
         lua_type = (lua_typeFunc *)addressSet["lua_type"];
         lua_settop = (lua_settopFunc *)addressSet["lua_settop"];
         luaL_loadbuffer = (luaL_loadbufferFunc *)addressSet["luaL_loadbuffer"];
+        luaL_loadfile = (luaL_loadFileFunc *)addressSet["luaL_loadfile"];
 
         IsDefenseTeamByOnlineFobLocal = (IsDefenseTeamByOnlineFobLocalFunc *)addressSet["IsDefenseTeamByOnlineFobLocal"];
         IsOffenseTeamByOnlineFobLocal = (IsOffenseTeamByOnlineFobLocalFunc *)addressSet["IsOffenseTeamByOnlineFobLocal"];

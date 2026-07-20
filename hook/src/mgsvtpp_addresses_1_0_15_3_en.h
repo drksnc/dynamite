@@ -225,6 +225,7 @@ namespace Dynamite {
         {"lua_type", 0x14c1ed760},
         {"lua_settop", 0x14c1ebbe0},
         {"luaL_loadbuffer", 0x14c200f90},
+        {"luaL_loadfile", 0x141a17b90},
 
         // /*
         //                 {"StrCode64", 0x14c1bd730},

@@ -62,11 +62,23 @@ namespace Dynamite {
 
         ImGui::Separator();
 
-        if (!g_hook->cfg.Host) 
-            DrawClientMenu();
+        g_hook->cfg.Host ? DrawHostMenu() : DrawClientMenu();
 
         ImGui::End();
 
+    }
+
+    void Dynamite::DrawHostMenu()
+    {
+        if (ImGui::Button("Load Mission Manually"))
+            g_hook->dynamiteCore.LoadMission(10040);
+
+        ImGui::Text("Status: ");
+        ImGui::SameLine();
+        g_hook->dynamiteCore.GetHostSessionCreated() ? ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, "Hosting")
+                                                     : ImGui::TextColored({1.0f, 1.0f, 0.0f, 1.0f}, "Idle");
+
+        ImGui::Text("Players: %d", g_hook->dynamiteCore.GetMemberCount());
     }
 
     void Dynamite::DrawClientMenu()
