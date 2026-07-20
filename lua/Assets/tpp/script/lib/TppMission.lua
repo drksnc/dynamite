@@ -2739,8 +2739,6 @@ function e.OnPlayerFultoned()
 	end
 end
 function e.Update()
-	Dynamite.Update()
-
 	local n = mvars
 	local i = svars
 	local s = e.GetMissionName()

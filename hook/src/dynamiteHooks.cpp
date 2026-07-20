@@ -319,6 +319,12 @@ namespace Dynamite {
         CREATE_HOOK(SetGameObjectIdToCharaControl)
         ENABLEHOOK(SetGameObjectIdToCharaControl)
 
+        CREATE_HOOK(TppGameSequenceUpdate)
+        ENABLEHOOK(TppGameSequenceUpdate)
+
+        CREATE_HOOK(FirstPartyP2pConnectionManagerUpdate)
+        ENABLEHOOK(FirstPartyP2pConnectionManagerUpdate)
+
         CREATE_HOOK(TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters)
         ENABLEHOOK(TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters)
 

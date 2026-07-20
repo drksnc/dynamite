@@ -179,6 +179,8 @@ namespace Dynamite {
         {"TppGmImplAiControllerImplGetCoreKnowledge", 0x146d18c90},
         {"TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLife", 0x14b73b3d0},
         {"SetGameObjectIdToCharaControl", 0x14689fb70},
+        {"TppGameSequenceUpdate", 0x144c891b0},
+        {"FirstPartyP2pConnectionManagerUpdate", 0x141cee650},
 
         {"BlockHeapAlloc", 0x143264660},
         {"BlockHeapFree", 0x1432651b0},

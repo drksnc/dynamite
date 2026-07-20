@@ -266,6 +266,8 @@ namespace Dynamite {
         TppGmImplAiControllerImplGetCoreKnowledge = (TppGmImplAiControllerImplGetCoreKnowledgeFunc *)addressSet["TppGmImplAiControllerImplGetCoreKnowledge"];
         TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLife = (TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLifeFunc *)
             addressSet["TppGmBossquietImplanonymous_namespaceLifeControllerImplUpdateLife"];
+        TppGameSequenceUpdate = (TppGameSequenceUpdateFunc *)addressSet["TppGameSequenceUpdate"];
+        FirstPartyP2pConnectionManagerUpdate = (TppGameSequenceUpdateFunc *)addressSet["FirstPartyP2pConnectionManagerUpdate"];
 
         FoxUiModelNodeSetColorA = (FoxUiModelNodeSetColorAFunc *)addressSet["FoxUiModelNodeSetColorA"];
         TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject =

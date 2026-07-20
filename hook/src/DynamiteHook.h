@@ -198,6 +198,8 @@ namespace Dynamite {
 
     void FoxCCCharacterControlUpdatePositionHook(void *this_, __m128 *outPosition, __m128 *delta);
     __int64 SetGameObjectIdToCharaControlHook(void *_this, int a2, unsigned __int16 a3);
+    void TppGameSequenceUpdateHook(int64_t param);
+    void FirstPartyP2pConnectionManagerUpdateHook(int64_t param);
 }
 
 #endif // HOOK_DYNAMITEHOOK_H

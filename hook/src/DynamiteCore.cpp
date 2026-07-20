@@ -659,5 +659,4 @@ namespace Dynamite {
 
         lua_pcall(L, 0, 0, 0);
     }
-
 }

@@ -1477,4 +1477,19 @@ namespace Dynamite {
 
         return SetGameObjectIdToCharaControl(_this, a2, a3);
     }
+
+    void TppGameSequenceUpdateHook(int64_t param) 
+    { 
+        if (g_hook->dynamiteCore.IsUIEventAvailable()) {
+            Event event = g_hook->dynamiteCore.GetUIEvent();
+            g_hook->OnUIEvent(event);
+        }
+
+        TppGameSequenceUpdate(param);
+    }
+
+    void FirstPartyP2pConnectionManagerUpdateHook(int64_t param_1) 
+    {
+        FirstPartyP2pConnectionManagerUpdate(param_1);
+    }
 }
