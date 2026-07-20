@@ -1439,4 +1439,15 @@ namespace Dynamite {
     {
         return luaL_loadfile(L, filename);
     }
+
+    void FoxCCCharacterControlUpdatePositionHook(__m128 *this_, __m128 *outPosition, __m128 *delta) {
+        Vector3 *pPositionVec = (Vector3 *)outPosition;
+        Vector3 *pDeltaVec = (Vector3 *)delta;
+        
+        //pPositionVec->x = 0.0f;
+        //pPositionVec->y = 0.0f;
+        //pPositionVec->z = 0.0f;
+
+        FoxCCCharacterControlUpdatePosition(this_, outPosition, delta);
+    }
 }

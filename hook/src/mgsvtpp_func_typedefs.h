@@ -349,6 +349,8 @@ typedef int32_t(__thiscall FoxNioImplSteamUdpSocketImplSendFunc)(void *SteamUdpS
 
 typedef int32_t(__thiscall FoxNioImplSteamUdpSocketImplRecvFunc)(void *SteamUdpSocketImpl, void *buffer, int size, void *SocketInfo, void *Address);
 
+typedef void(__thiscall FoxCCCharacterControlUpdatePositionFunc)(__m128 *object, __m128 *outPoisitiom, __m128 *delta);
+
 typedef void *SteamNetworkingFunc();
 
 typedef void *(__thiscall TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParametersFunc)(void *EmblemEditorSystemImpl, void *ErrorCode,
@@ -636,6 +638,7 @@ extern FoxNioImplMpMuxImplSendUpdateFunc *FoxNioImplMpMuxImplSendUpdate;
 extern FoxNioImplSppSocketImplSendImplFunc *FoxNioImplSppSocketImplSendImpl;
 extern FoxNioImplSteamUdpSocketImplSendFunc *FoxNioImplSteamUdpSocketImplSend;
 extern FoxNioImplSteamUdpSocketImplRecvFunc *FoxNioImplSteamUdpSocketImplRecv;
+extern FoxCCCharacterControlUpdatePositionFunc *FoxCCCharacterControlUpdatePosition;
 extern TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParametersFunc *TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters;
 extern TppUiEmblemImplEmblemEditorSystemImplCreateEmblemFunc *TppUiEmblemImplEmblemEditorSystemImplCreateEmblem;
 extern TppUiEmblemImplEmblemEditorSystemImplLoadEmblemTextureInfoFunc *TppUiEmblemImplEmblemEditorSystemImplLoadEmblemTextureInfo;

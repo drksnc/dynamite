@@ -647,6 +647,17 @@ namespace Dynamite {
         lua_pushinteger(L, missionId);
 
         lua_pcall(L, 1, 0, 0);
+
+    }
+
+    void DynamiteCore::TestFunction()
+    {
+        lua_State *L = hookState.luaState;
+
+        lua_getglobal(L, "TppMission");
+        lua_getfield(L, -1, "Test");
+
+        lua_pcall(L, 0, 0, 0);
     }
 
 }

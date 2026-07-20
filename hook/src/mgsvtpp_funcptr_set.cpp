@@ -185,6 +185,7 @@ namespace Dynamite {
         FoxNioImplSppSocketImplSendImpl = (FoxNioImplSppSocketImplSendImplFunc *)addressSet["FoxNioImplSppSocketImplSendImpl"];
         FoxNioImplSteamUdpSocketImplSend = (FoxNioImplSteamUdpSocketImplSendFunc *)addressSet["FoxNioImplSteamUdpSocketImplSend"];
         FoxNioImplSteamUdpSocketImplRecv = (FoxNioImplSteamUdpSocketImplRecvFunc *)addressSet["FoxNioImplSteamUdpSocketImplRecv"];
+        FoxCCCharacterControlUpdatePosition = (FoxCCCharacterControlUpdatePositionFunc *)addressSet["FoxCCCharacterControlUpdatePosition"];
         TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters =
             (TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParametersFunc *)addressSet["TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters"];
         TppUiEmblemImplEmblemEditorSystemImplCreateEmblem =

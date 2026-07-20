@@ -52,6 +52,8 @@ namespace Dynamite {
 
         bool OnMessage(HWND wnd, UINT message, WPARAM w_param, LPARAM l_param);
 
+        void OnUIEvent(Event event);
+
         void ToggleDrawUI();
 
         static void AbortHandler(int signal_number);

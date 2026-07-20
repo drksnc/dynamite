@@ -1,4 +1,4 @@
-#include "dynamite.h"
+    #include "dynamite.h"
 #include "spdlog/spdlog.h"
 
 #include <imgui.h>
@@ -64,6 +64,9 @@ namespace Dynamite {
 
         g_hook->cfg.Host ? DrawHostMenu() : DrawClientMenu();
 
+        if (ImGui::Button("Test Function"))
+            g_hook->dynamiteCore.AddUIEvent(Event::TestFunction);
+
         ImGui::End();
 
     }
@@ -71,7 +74,7 @@ namespace Dynamite {
     void Dynamite::DrawHostMenu()
     {
         if (ImGui::Button("Load Mission Manually"))
-            g_hook->dynamiteCore.LoadMission(10040);
+            g_hook->dynamiteCore.AddUIEvent(Event::LoadMission);
 
         ImGui::Text("Status: ");
         ImGui::SameLine();
@@ -322,6 +325,19 @@ namespace Dynamite {
         }
         return true;
     } // OnMessage
+
+    void Dynamite::OnUIEvent(Event event) 
+    { 
+        switch (event) 
+        {
+        case Event::LoadMission:
+            g_hook->dynamiteCore.LoadMission(10040);
+            break;
+        case Event::TestFunction:
+            g_hook->dynamiteCore.TestFunction();
+            break;
+        }
+    }
 
     void Dynamite::CreateRenderTarget() {
         CleanupRenderTarget();

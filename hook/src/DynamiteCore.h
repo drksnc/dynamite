@@ -7,6 +7,7 @@
 #include "Tpp/BossQuietActionTask.h"
 #include "Tpp/TppNPCLifeState.h"
 #include "Tpp/TppTypes.h"
+#include "ThreadSafeStack.hpp"
 
 #include <thread>
 
@@ -48,6 +49,11 @@ namespace Dynamite {
         short GetCurrentMissionID();
         std::string GetCurrentMissionName();
         void LoadMission(short missionId);
+        void TestFunction();
+
+        void AddUIEvent(Event event) { ui_events.Push(event); };
+        Event GetUIEvent() { return ui_events.WaitAndPop(); };
+        bool IsUIEventAvailable() { return !ui_events.Empty(); };
 
       private:
         bool sessionCreated = false;
@@ -60,6 +66,8 @@ namespace Dynamite {
         std::jthread nearestPlayerThread;
         uint32_t missionsCompleted = 0;
         std::filesystem::path missionsFilename = std::filesystem::path("dynamite") / std::filesystem::path("missions.txt");
+
+        EventStack ui_events;
     };
 }
 

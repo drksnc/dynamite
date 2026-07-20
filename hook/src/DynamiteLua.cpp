@@ -16,6 +16,8 @@ namespace Dynamite {
             return 0;
         }
 
+        return 0;
+
         FobTarget *ft = (FobTarget *)hookState.fobTargetCtor;
         SessionConnectInfo *connectInfo = nullptr;
         bool bFreeMem = false;
@@ -409,6 +411,17 @@ namespace Dynamite {
         return 1;
     }
 
+    int l_Update(lua_State *L) 
+    {
+        if (g_hook->dynamiteCore.IsUIEventAvailable())
+        {
+            Event event = g_hook->dynamiteCore.GetUIEvent();
+            g_hook->OnUIEvent(event);
+        }
+
+        return 0;
+    }
+
     // int l_GetCamoRate(lua_State *L) {
     //     // wrong!
     //     // auto lvar8 = *(uint32_t *)((char *)camouflageControllerImpl + 0x38);
@@ -448,6 +461,7 @@ namespace Dynamite {
             {"GetMissionsCompleted", l_GetMissionsCompleted},
             {"GetEquipment", l_GetActiveEquipmentID},
             {"GetEquipIDInSlot", l_GetEquipIDInSlot},
+            {"Update", l_Update},
             {nullptr, nullptr},
         };
         luaI_openlib(L, "Dynamite", libFuncs, 0);

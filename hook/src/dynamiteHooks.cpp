@@ -313,6 +313,9 @@ namespace Dynamite {
         CREATE_HOOK(FoxNioImplSteamUdpSocketImplRecv)
         ENABLEHOOK(FoxNioImplSteamUdpSocketImplRecv)
 
+        CREATE_HOOK(FoxCCCharacterControlUpdatePosition)
+        ENABLEHOOK(FoxCCCharacterControlUpdatePosition)
+
         CREATE_HOOK(TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters)
         ENABLEHOOK(TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParameters)
 
