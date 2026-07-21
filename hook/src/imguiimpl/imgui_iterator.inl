@@ -1822,10 +1822,10 @@ END_IMGUI_FUNC
 // Unsupported arg type  float& out_r
 // Unsupported arg type  float& out_g
 // Unsupported arg type  float& out_b
-//    IMGUI_API int           GetKeyIndex(ImGuiKey imgui_key);                                    // map ImGuiKey_* values into user's key index. == io.KeyMap[key]
-IMGUI_FUNCTION(GetKeyIndex)
+//    IMGUI_API int           old: GetKeyIndex(ImGuiKey imgui_key); new: IsKeyPressed             // map ImGuiKey_* values into user's key index. == io.KeyMap[key]
+IMGUI_FUNCTION(IsKeyPressed)
 INT_ARG(imgui_key)
-CALL_FUNCTION(GetKeyIndex, int, imgui_key)
+CALL_FUNCTION(IsKeyPressed, int, imgui_key)
 PUSH_NUMBER(ret)
 END_IMGUI_FUNC
 //    IMGUI_API bool          IsKeyDown(int user_key_index);                                      // is key being held. == io.KeysDown[user_key_index].
@@ -1855,10 +1855,10 @@ NUMBER_ARG(rate)
 CALL_FUNCTION(GetKeyPressedAmount, int, key_index, repeat_delay, rate)
 PUSH_NUMBER(ret)
 END_IMGUI_FUNC
-//    IMGUI_API void          CaptureKeyboardFromApp(bool want_capture_keyboard_value = true);    // attention: misleading name! manually override io.WantCaptureKeyboard flag next frame (said flag is entirely left for your application to handle). e.g. force capture keyboard when your widget is being hovered. This is equivalent to setting "io.WantCaptureKeyboard = want_capture_keyboard_value"; after the next NewFrame() call.
-IMGUI_FUNCTION(CaptureKeyboardFromApp)
+//    IMGUI_API void          old: CaptureKeyboardFromApp(bool want_capture_keyboard_value = true); new: SetNextFrameWantCaptureKeyboard // attention: misleading name! manually override io.WantCaptureKeyboard flag next frame (said flag is entirely left for your application to handle). e.g. force capture keyboard when your widget is being hovered. This is equivalent to setting "io.WantCaptureKeyboard = want_capture_keyboard_value"; after the next NewFrame() call.
+IMGUI_FUNCTION(SetNextFrameWantCaptureKeyboard)
 OPTIONAL_BOOL_ARG(want_capture_keyboard_value, true)
-CALL_FUNCTION_NO_RET(CaptureKeyboardFromApp, want_capture_keyboard_value)
+CALL_FUNCTION_NO_RET(SetNextFrameWantCaptureKeyboard, want_capture_keyboard_value)
 END_IMGUI_FUNC
 //    IMGUI_API bool          IsMouseDown(ImGuiMouseButton button);                               // is mouse button held?
 IMGUI_FUNCTION(IsMouseDown)
@@ -1939,10 +1939,10 @@ IMGUI_FUNCTION(SetMouseCursor)
 INT_ARG(cursor_type)
 CALL_FUNCTION_NO_RET(SetMouseCursor, cursor_type)
 END_IMGUI_FUNC
-//    IMGUI_API void          CaptureMouseFromApp(bool want_capture_mouse_value = true);          // attention: misleading name! manually override io.WantCaptureMouse flag next frame (said flag is entirely left for your application to handle). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse_value;" after the next NewFrame() call.
-IMGUI_FUNCTION(CaptureMouseFromApp)
+//    IMGUI_API void          old: CaptureMouseFromApp(bool want_capture_mouse_value = true); new: SetNextFrameWantCaptureMouse // attention: misleading name! manually override io.WantCaptureMouse flag next frame (said flag is entirely left for your application to handle). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse_value;" after the next NewFrame() call.
+IMGUI_FUNCTION(SetNextFrameWantCaptureMouse)
 OPTIONAL_BOOL_ARG(want_capture_mouse_value, true)
-CALL_FUNCTION_NO_RET(CaptureMouseFromApp, want_capture_mouse_value)
+CALL_FUNCTION_NO_RET(SetNextFrameWantCaptureMouse, want_capture_mouse_value)
 END_IMGUI_FUNC
 //    IMGUI_API const char*   GetClipboardText();
 IMGUI_FUNCTION(GetClipboardText)

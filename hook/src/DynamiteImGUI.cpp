@@ -26,7 +26,7 @@ namespace Dynamite {
 
         // tex disable mouse input to game
         if (unlockCursor) {
-            ImGui::CaptureMouseFromApp(true);
+            ImGui::SetNextFrameWantCaptureMouse(true);
         }
 
         if (io.WantCaptureMouse) {
