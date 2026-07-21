@@ -99,7 +99,8 @@ add_library(${PROJECT_NAME} SHARED
 		src/imgui/imgui_demo.cpp
 		src/imgui/imgui_draw.cpp
 		src/imgui/imgui_widgets.cpp
-		
+		src/imgui/imgui_tables.cpp
+
 		src/imguiimpl/imgui_impl_dx11.cpp
 		src/imguiimpl/imgui_impl_win32.cpp
 )
