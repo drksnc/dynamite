@@ -1443,19 +1443,8 @@ namespace Dynamite {
     std::map<char*,uint16_t> g_CharaMap;
 
     void FoxCCCharacterControlUpdatePositionHook(void *this_, __m128 *outPosition, __m128 *delta) {
-        Vector3 *pPositionVec = (Vector3 *)outPosition;
-        Vector3 *pDeltaVec = (Vector3 *)delta;
-        
-        Vector3 pPlayerPos = g_hook->dynamiteCore.GetPlayerPosition(0);
-
-        uint16_t gameObjectId = -1;
-        for (const auto& it : g_CharaMap)
-        {
-            if ((uint16_t)((char *)this_ - 3320) == it.second) {
-               gameObjectId = it.second;
-               break;
-            }
-        }
+        //Vector3 *pPositionVec = (Vector3 *)outPosition;
+        //Vector3 *pDeltaVec = (Vector3 *)delta;
 
         //auto go = FindGameObjectWithID(gameObjectId);
         //if (go == nullptr) {
