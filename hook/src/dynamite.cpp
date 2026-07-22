@@ -17,6 +17,7 @@
 #include "patch.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/spdlog.h"
+#include "spdlog/sinks/msvc_sink.h"
 #include "util.h"
 
 #include "DynamiteHook.h"
@@ -73,8 +74,17 @@ namespace Dynamite {
         }
     }
 
-    void Dynamite::SetupLogger() {
-        log = spdlog::basic_logger_st(logName, logPath.string(), true);
+    void Dynamite::SetupLogger() 
+    {
+        std::vector<spdlog::sink_ptr> sinks
+        {
+#ifdef _MSC_VER
+            std::make_shared<spdlog::sinks::msvc_sink_mt>(),
+#endif
+            std::make_shared<spdlog::sinks::basic_file_sink_mt>(logPath.string())
+        };
+
+        log = std::make_shared<spdlog::logger>(logName, sinks.begin(), sinks.end());
         spdlog::set_default_logger(log);
         // using `flush_every` with multithreaded logger will result in application hang during DLL_PROCESS_DETACH
         spdlog::flush_on(spdlog::level::info);
@@ -83,9 +93,6 @@ namespace Dynamite {
     }
 
     Dynamite::Dynamite() : thisModule{GetModuleHandle(nullptr)} {
-        if (g_hook == nullptr)
-            g_hook = this;
-
         menuOpenPrev = menuOpen;
         
         signal(SIGABRT, &AbortHandler);
