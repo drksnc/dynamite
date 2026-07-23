@@ -54,6 +54,9 @@ namespace Dynamite {
 
         g_hook->dynamiteCore.SetHostSessionCreated(res > 0);
 
+        if (res > 0)
+            g_hook->dynamiteCore.StartSteamtHost();
+
         lua_getglobal(L, "TppUiCommand");
         lua_getfield(L, -1, "AnnounceLogViewLangId");
         const auto text = "dynamite_created_host_session\0";

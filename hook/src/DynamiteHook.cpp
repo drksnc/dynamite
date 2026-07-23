@@ -6,6 +6,7 @@
 #include "Tpp/TppFOB.h"
 #include "Tpp/TppGameStatusFlag.h"
 #include "Tpp/TppMarkerType.h"
+#include "Tpp/TppGameObject.h"
 #include "dynamite.h"
 #include "memtag.h"
 #include "mgsvtpp_func_typedefs.h"
@@ -981,46 +982,65 @@ namespace Dynamite {
         return res;
     }
 
+    void FoxNioImplSteamUdpSocketImplUpdateHook(void *_this) 
+    { 
+        // Process native packets via hooks in the FakeReadP2PPacket
+        FoxNioImplSteamUdpSocketImplUpdate(_this);
+
+        // Now process our own packets
+        g_hook->dynamiteCore.RetrieveNetworkMessages();
+    }
+
+    // This is called from the engine. Mark packet as NET_NATIVE to pass it back
     int32_t FoxNioImplSteamUdpSocketImplSendHook(void *SteamUdpSocketImpl, void *param_1, int param_2, void *SocketInfo, void *Address) {
         g_hook->dynamiteSyncImpl.steamUDPAddress = Address;
         g_hook->dynamiteSyncImpl.steamUDPSocketInfo = SocketInfo;
         g_hook->dynamiteSyncImpl.steamUDPSocket = SteamUdpSocketImpl;
 
-        auto dumpSize = param_2;
-        if (dumpSize > 50) {
-            dumpSize = 50;
+        if (g_hook->cfg.debug.dynamiteMsg) {
+            auto dumpSize = param_2;
+            if (dumpSize > 50) {
+                dumpSize = 50;
+            }
+
+            auto dump = bytes_to_hex(param_1, dumpSize);
+            spdlog::debug("{}, p1={}, p2={}, socketInfo={}, address={}, dump={}", __FUNCSIG__, param_1, param_2, SocketInfo, Address, dump);
         }
 
-        auto dump = bytes_to_hex(param_1, dumpSize);
-        auto res = FoxNioImplSteamUdpSocketImplSend(SteamUdpSocketImpl, param_1, param_2, SocketInfo, Address);
-        spdlog::debug("{}, p1={}, p2={}, socketInfo={}, address={}, res={}, dump={}", __FUNCSIG__, param_1, param_2, SocketInfo, Address, res, dump);
-        return res;
+        const uint8_t header = static_cast<uint8_t>(PacketType::NET_NATIVE_PACKET);
+        const size_t framedSize = 1 + param_2;
+        std::vector<uint8_t> framed(framedSize);
+        framed[0] = header;
+        std::memcpy(framed.data() + 1, param_1, param_2);
+
+        g_hook->dynamiteCore.SendRawNetworkMessage(framed.data(), framedSize);
+        return framedSize;
     }
 
     int32_t FoxNioImplSteamUdpSocketImplRecvHook(void *SteamUdpSocketImpl, void *buffer, int maxBufferSize, void *SocketInfo, void *Address) {
-        auto responseSize = FoxNioImplSteamUdpSocketImplRecv(SteamUdpSocketImpl, buffer, maxBufferSize, SocketInfo, Address);
-        if (responseSize < sizeof(DYNAMITE_RAW_HEADER)) {
-            return responseSize;
-        }
+        // auto responseSize = FoxNioImplSteamUdpSocketImplRecv(SteamUdpSocketImpl, buffer, maxBufferSize, SocketInfo, Address);
+        //if (responseSize < sizeof(DYNAMITE_RAW_HEADER)) {
+        //    return responseSize;
+        //}
+        //
+        //if (responseSize < 0) {
+        //    return responseSize;
+        //}
+        //
+        //if (memcmp(buffer, &DYNAMITE_RAW_HEADER, sizeof(DYNAMITE_RAW_HEADER)) != 0) {
+        //    return responseSize;
+        //}
+        //
+        //auto dumpSize = responseSize;
+        //if (dumpSize > 50) {
+        //    dumpSize = 50;
+        //}
+        //
+        //auto bytes = bytes_to_hex(buffer, dumpSize);
+        //spdlog::debug("{}, bufSize={}, responseSize={}, dump={}", __FUNCSIG__, maxBufferSize, responseSize, bytes);
+        //g_hook->dynamiteSyncImpl.RecvRaw(buffer, responseSize);
 
-        if (responseSize < 0) {
-            return responseSize;
-        }
-
-        if (memcmp(buffer, &DYNAMITE_RAW_HEADER, sizeof(DYNAMITE_RAW_HEADER)) != 0) {
-            return responseSize;
-        }
-
-        auto dumpSize = responseSize;
-        if (dumpSize > 50) {
-            dumpSize = 50;
-        }
-
-        auto bytes = bytes_to_hex(buffer, dumpSize);
-        spdlog::debug("{}, bufSize={}, responseSize={}, dump={}", __FUNCSIG__, maxBufferSize, responseSize, bytes);
-        g_hook->dynamiteSyncImpl.RecvRaw(buffer, responseSize);
-
-        return responseSize;
+        return FoxNioImplSteamUdpSocketImplRecv(SteamUdpSocketImpl, buffer, maxBufferSize, SocketInfo, Address);
     }
 
     void *TppUiEmblemImplEmblemEditorSystemImplCreateEmblemParametersHook(void *EmblemEditorSystemImpl, void *ErrorCode, void *EmblemTextureParameters,
@@ -1440,10 +1460,42 @@ namespace Dynamite {
         return luaL_loadfile(L, filename);
     }
 
-    std::map<char*,uint16_t> g_CharaMap;
+    std::map<short, std::chrono::time_point<std::chrono::steady_clock>> soldiersTimer;
+
+    void SendSoldiersPositions()
+    {
+        if (!g_hook->dynamiteCore.IsHostWorking())
+            return;
+
+        const auto [rangeStart, rangeEnd] = GetTypeRange(GAME_OBJECT_TYPE_SOLDIER2);
+        for (int i = rangeStart; i < rangeEnd; i++) {
+            auto soldierPos = g_hook->dynamiteCore.GetSoldierPosition(i);
+            if (!soldierPos.Valid()) {
+                continue;
+            }
+
+            if (!positionValid(soldierPos)) {
+                continue;
+            }
+
+            auto it = soldiersTimer.find(i);
+            if (it == soldiersTimer.end())
+                soldiersTimer.insert({i, std::chrono::steady_clock::now()});
+
+            if (std::chrono::steady_clock::now() - it->second >= std::chrono::milliseconds(50)) {
+                Packet p;
+                p.Start(PacketType::NET_GAMEOBJECT_POSITION);
+                p.Write<int>(i);
+                p.WriteVec3(soldierPos);
+
+                g_hook->dynamiteCore.SendNetworkMessage(p, false);
+
+                it->second = std::chrono::steady_clock::now();
+            }
+        }
+    }
 
     void FoxCCCharacterControlUpdatePositionHook(void *this_, __m128 *outPosition, __m128 *delta) {
-        //Vector3 *pPositionVec = (Vector3 *)outPosition;
         //Vector3 *pDeltaVec = (Vector3 *)delta;
 
         //auto go = FindGameObjectWithID(gameObjectId);
@@ -1451,6 +1503,7 @@ namespace Dynamite {
         //    spdlog::info("cant find object");
         //}
         //spdlog::info("gameObjectId: {}", gameObjectId);
+
         FoxCCCharacterControlUpdatePosition(this_, outPosition, delta);
 
         //pPositionVec->x = pPlayerPos.x;
@@ -1459,26 +1512,24 @@ namespace Dynamite {
     }
 
     __int64 SetGameObjectIdToCharaControlHook(void *_this, int a2, unsigned __int16 a3) {
-        if (g_CharaMap.find((char*)_this) != g_CharaMap.end())
-            g_CharaMap.at((char *)_this) = a3;
-        else
-            g_CharaMap.insert({(char*)_this, a3});
-
         return SetGameObjectIdToCharaControl(_this, a2, a3);
     }
 
     void TppGameSequenceUpdateHook(int64_t param) 
-    { 
-        if (g_hook->dynamiteCore.IsUIEventAvailable()) {
-            Event event = g_hook->dynamiteCore.GetUIEvent();
-            g_hook->OnUIEvent(event);
-        }
+    {
+        if (!g_hook->dynamiteCore.IsHostWorking() && !g_hook->dynamiteCore.IsClientConnected())
+            g_hook->dynamiteCore.RetrieveNetworkMessages();
 
         TppGameSequenceUpdate(param);
     }
 
     void FirstPartyP2pConnectionManagerUpdateHook(int64_t param_1) 
     {
-        FirstPartyP2pConnectionManagerUpdate(param_1);
+        FirstPartyP2pConnectionManagerUpdate(param_1); 
+    }
+
+    bool SessionImpl2IsHostHook(void *_this) 
+    {
+        return g_hook->cfg.Host; 
     }
 }

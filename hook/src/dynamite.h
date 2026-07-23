@@ -63,6 +63,7 @@ namespace Dynamite {
         static std::vector<Patch> GetPatches();
 
         static bool PatchMasterServerURL(const std::string &url);
+        static bool PatchSteamNetworking();
 
         DynamiteSyncImpl dynamiteSyncImpl;
 

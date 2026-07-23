@@ -1,5 +1,5 @@
 #include "DynamiteCore.h"
-
+#include "DynamiteLua.h"
 #include "DynamiteHook.h"
 #include "EmblemInfo.h"
 #include "ScriptVarResult.h"
@@ -486,7 +486,6 @@ namespace Dynamite {
         defensePlayerID = 15;
         sessionCreated = false;
         sessionConnected = false;
-        hostSessionCreated = false;
         emblemCreated = false;
     }
 
@@ -500,7 +499,7 @@ namespace Dynamite {
 
     void DynamiteCore::SetSessionConnected(const bool v) { sessionConnected = v; }
 
-    bool DynamiteCore::GetSessionConnected() const { return sessionConnected; }
+    bool DynamiteCore::GetSessionConnected() const { return IsClientConnected(); }
 
     void DynamiteCore::SetEmblemCreated(const bool v) { emblemCreated = v; }
 
@@ -658,5 +657,165 @@ namespace Dynamite {
         lua_getfield(L, -1, "Test");
 
         lua_pcall(L, 0, 0, 0);
+    }
+
+    void DynamiteCore::StartSteamtHost() 
+    {
+        if (m_pSteamServer == nullptr)
+            m_pSteamServer = new CSteamServer();
+
+        m_pSteamServer->Start();
+    }
+
+    void DynamiteCore::StopSteamtHost() 
+    { 
+        if (m_pSteamServer)
+        {
+            if (m_pSteamServer->IsWorking())
+                m_pSteamServer->Stop();
+
+            delete m_pSteamServer;
+            m_pSteamServer = nullptr;
+        }
+    }
+
+    void DynamiteCore::StartSteamClient(const char *ip_address) 
+    {
+        if (m_pSteamClient == nullptr)
+            m_pSteamClient = new CSteamClient();
+
+        m_pSteamClient->Connect(ip_address);
+    }
+
+    void DynamiteCore::StopSteamClient() 
+    {
+        if (m_pSteamClient) 
+        {
+            if (m_pSteamClient->IsConnected())
+                m_pSteamClient->Disconnect();
+
+            delete m_pSteamClient;
+            m_pSteamClient = nullptr;
+        }
+    }
+
+    void DynamiteCore::SendNetworkMessage(Packet packet, bool reliable) 
+    { 
+        if (IsHostWorking())
+        {
+            m_pSteamServer->SendNetworkMessageToClient(packet.Data(), packet.Size(), reliable);
+        }
+        else if (IsClientConnected())
+        {
+            m_pSteamClient->SendNetworkMessageToServer(packet.Data(), packet.Size(), reliable);
+        }
+    }
+
+    void DynamiteCore::SendRawNetworkMessage(void *data, const size_t size) 
+    {
+        if (IsHostWorking()) {
+            m_pSteamServer->SendNetworkMessageToClient(data, size, false);
+        } else if (IsClientConnected()) {
+            m_pSteamClient->SendNetworkMessageToServer(data, size, false);
+        }
+    }
+
+    void DynamiteCore::SendLocalMessage(Packet packet) 
+    { 
+        m_NetworkMessages.Create(packet.Data(), packet.Size());
+    }
+
+    bool DynamiteCore::IsHostWorking() const
+    { 
+        return m_pSteamServer && m_pSteamServer->IsWorking(); 
+    }
+
+    bool DynamiteCore::IsClientConnected() const 
+    { 
+        return m_pSteamClient && m_pSteamClient->IsConnected(); 
+    }
+
+    void DynamiteCore::RetrieveNetworkMessages() 
+    { 
+        Packet *p = m_NetworkMessages.Retrieve();
+
+        if (p == nullptr)
+            return;
+
+        const auto type = p->Read<PacketType>();
+        spdlog::info("packet {} received", static_cast<uint8_t>(type));
+
+        switch (type) {
+            case PacketType::NET_GAMEOBJECT_POSITION: {
+                int gameObjectID = p->Read<int>();
+                Vector3 pos = p->ReadVec3();
+            } break;
+            case PacketType::NET_MISSION_START: {
+                short missionId = p->Read<short>();
+                LoadMission(missionId);
+            } break;
+            case PacketType::NET_CONNECT: {
+                const auto address = p->ReadString();
+                StartSteamClient(address.c_str());
+            } break;
+
+        }
+
+        delete p;
+    }
+
+    bool DynamiteCore::RetrieveNativeNetworkMessages(void *steam_ptr, void *dest, uint32_t destSize, uint32_t *bytesRead) 
+    {
+        Packet *p = m_NetworkMessages.Retrieve();
+
+        if (p == nullptr) {
+            *bytesRead = static_cast<uint32_t>(0);
+            return false;
+        }
+
+        const auto size = p->Size() - 1;
+
+        spdlog::info("native packet received with size {}", size);
+        memcpy(dest, p->Data() + 1, size);
+        *bytesRead = static_cast<uint32_t>(size);
+
+        delete p;
+
+        return size > 0;
+    }
+
+    uint32_t DynamiteCore::HasNativePacket() 
+    { 
+        Packet *p = m_NetworkMessages.GetFirst();
+
+        if (p == nullptr)
+            return 0;
+
+        const auto type = p->Read<PacketType>();
+        p->ResetCursor();
+
+        if (type != PacketType::NET_NATIVE_PACKET)
+            return 0;
+
+        return p->Size();
+    }
+
+    void DynamiteCore::OnClientConnectFinished(const bool isLocal) 
+    { 
+        if (isLocal)
+        {
+            if (l_CreateClientSession(hookState.luaState) > 0) {
+                StopSteamClient();
+                return;
+            }
+        }
+        else
+        {
+            Packet p;
+            p.Start(PacketType::NET_MISSION_START);
+            p.Write<short>(GetCurrentMissionID());
+            spdlog::info("sending NET_MISSION_START size {}", p.Size());
+            SendNetworkMessage(p, true);
+        }
     }
 }

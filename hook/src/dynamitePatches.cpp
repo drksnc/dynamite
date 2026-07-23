@@ -1,5 +1,7 @@
 #include "dynamite.h"
 #include "patch.h"
+#include "DynamiteHook.h"
+#include <spdlog/spdlog.h>
 #include <vector>
 
 namespace Dynamite {
@@ -274,5 +276,69 @@ namespace Dynamite {
         };
 
         return p.Apply();
+    }
+
+
+    using SteamNetworkingFunc_t = void* (*)();
+    static SteamNetworkingFunc_t orig_SteamNetworking = nullptr;
+    static constexpr uintptr_t STEAM_NETWORKING_IAT = 0x14DB4F7C8;
+    static void *orig_vtable[16] = {};
+    static bool vtable_patched = false;
+
+
+    static bool __fastcall FakeIsP2PPacketAvailable(void *self, uint32 *pcubMsgSize, int channel) {
+        *pcubMsgSize = g_hook->dynamiteCore.HasNativePacket();
+        return *pcubMsgSize > 0;
+    }
+
+    static bool __fastcall FakeReadP2PPacket(void *self, void *dest, uint32_t destSize, uint32_t *bytesRead, uint64_t *remoteSteamId, int channel) {
+        if (remoteSteamId)
+            *remoteSteamId = g_hook->cfg.HostSteamID;
+
+        return g_hook->dynamiteCore.RetrieveNativeNetworkMessages(self, dest, destSize, bytesRead);
+    }
+
+    static bool __fastcall FakeAcceptP2PSession(void *self, uint64_t steamId) { return true; }
+
+    static bool __fastcall FakeCloseP2PSession(void *self, uint64_t steamId) { return false; }
+
+    static void PatchSteamVtable(void *singleton) {
+        if (!singleton || vtable_patched)
+            return;
+
+        void **vtable = *reinterpret_cast<void ***>(singleton);
+
+        memcpy(orig_vtable, vtable, sizeof(orig_vtable));
+
+        DWORD oldProtect;
+        VirtualProtect(vtable, sizeof(orig_vtable), PAGE_EXECUTE_READWRITE, &oldProtect);
+
+        vtable[1] = (void *)FakeIsP2PPacketAvailable;
+        vtable[2] = (void *)FakeReadP2PPacket;
+        //vtable[3] = (void *)FakeAcceptP2PSession;
+        //vtable[4] = (void *)FakeCloseP2PSession;
+
+        VirtualProtect(vtable, sizeof(orig_vtable), oldProtect, &oldProtect);
+
+        vtable_patched = true;
+        spdlog::info("ISteamNetworking vtable patched: [1]=FakeIsP2PPacketAvailable, [2]=FakeReadP2PPacket");
+    }
+
+    static void *__fastcall HookedSteamNetworking() {
+        void *singleton = orig_SteamNetworking();
+        PatchSteamVtable(singleton);
+        return singleton;
+    }
+
+    bool Dynamite::PatchSteamNetworking() 
+    { 
+        auto **iatEntry = reinterpret_cast<void **>(STEAM_NETWORKING_IAT);
+        orig_SteamNetworking = reinterpret_cast<SteamNetworkingFunc_t>(*iatEntry);
+
+        DWORD oldProtect;
+        VirtualProtect(iatEntry, sizeof(void *), PAGE_READWRITE, &oldProtect);
+        *iatEntry = (void *)HookedSteamNetworking;
+        VirtualProtect(iatEntry, sizeof(void *), oldProtect, &oldProtect);
+        return true; 
     }
 }

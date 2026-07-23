@@ -472,6 +472,7 @@ typedef uint32_t(__thiscall TppGmPlayerImplUiControllerImplGetReticleColorTypeOf
 typedef __int64(__thiscall SetGameObjectIdToCharaControlFunc)(void *_this, int a2, unsigned __int16 a3);
 typedef void(__thiscall TppGameSequenceUpdateFunc)(int64_t param);
 typedef void(__thiscall FirstPartyP2pConnectionManagerUpdateFunc)(int64_t param);
+typedef void(__thiscall FoxNioImplSteamUdpSocketImplUpdateFunc)(void *_this);
 
 // lua library functions
 extern luaI_openlibFunc *luaI_openlib;
@@ -694,4 +695,5 @@ extern TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectFunc *TppGm
 extern SetGameObjectIdToCharaControlFunc *SetGameObjectIdToCharaControl;
 extern TppGameSequenceUpdateFunc *TppGameSequenceUpdate;
 extern FirstPartyP2pConnectionManagerUpdateFunc *FirstPartyP2pConnectionManagerUpdate;
+extern FoxNioImplSteamUdpSocketImplUpdateFunc *FoxNioImplSteamUdpSocketImplUpdate;
 #endif // HOOK_MGSVTPP_FUNC_TYPEDEFS_H

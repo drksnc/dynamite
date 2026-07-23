@@ -8,7 +8,12 @@
 #include "Tpp/TppNPCLifeState.h"
 #include "Tpp/TppTypes.h"
 #include "ThreadSafeStack.hpp"
+#include "SteamClient.h"
+#include "SteamServer.h"
+#include "net_queue.h"
 
+#include <deque>
+#include <mutex>
 #include <thread>
 
 namespace Dynamite {
@@ -51,9 +56,24 @@ namespace Dynamite {
         void LoadMission(short missionId);
         void TestFunction();
 
-        void AddUIEvent(Event event) { ui_events.Push(event); };
-        Event GetUIEvent() { return ui_events.WaitAndPop(); };
-        bool IsUIEventAvailable() { return !ui_events.Empty(); };
+        void StartSteamtHost();
+        void StopSteamtHost();
+        void StartSteamClient(const char *ip_address);
+        void StopSteamClient();
+
+        void SendNetworkMessage(Packet packet, bool reliable);
+        void SendRawNetworkMessage(void *data, const size_t size);
+        void SendLocalMessage(Packet packet);
+
+        bool IsHostWorking() const;
+        bool IsClientConnected() const;
+
+        void CreateNetworkMessage(void *ptr, const size_t size) { m_NetworkMessages.Create(ptr, size); };
+        void RetrieveNetworkMessages();
+        bool RetrieveNativeNetworkMessages(void *steam_ptr, void *dest, uint32_t destSize, uint32_t *bytesRead);
+        uint32_t HasNativePacket();
+        void OnClientConnectFinished(const bool isLocal);
+
 
       private:
         bool sessionCreated = false;
@@ -67,7 +87,11 @@ namespace Dynamite {
         uint32_t missionsCompleted = 0;
         std::filesystem::path missionsFilename = std::filesystem::path("dynamite") / std::filesystem::path("missions.txt");
 
-        EventStack ui_events;
+        CSteamServer *m_pSteamServer = nullptr;
+        CSteamClient *m_pSteamClient = nullptr;
+        NetQueue m_NetworkMessages;
+        std::mutex m_nativeMutex;
+        std::deque<std::vector<uint8_t>> m_nativeQueue;
     };
 }
 

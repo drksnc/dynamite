@@ -144,6 +144,7 @@ namespace Dynamite {
         {"FoxNioImplSppSocketImplSendImpl", 0x141a57b00},
         {"FoxNioImplSteamUdpSocketImplSend", 0x14c4044f0},
         {"FoxNioImplSteamUdpSocketImplRecv", 0x14c4042c0},
+        {"FoxNioImplSteamUdpSocketImplUpdate", 0x14c404860},
         {"FoxCCCharacterControlUpdatePosition", 0x14c8468f0},
         {"TppUiMenuUiCommonDataManagerLoadLanguageBlock", 0x145bddb50},
         {"TppUiUtilityChangeLanguage", 0x14090f130},
@@ -206,6 +207,7 @@ namespace Dynamite {
         //{"ColorCrosshair1", 0x14D71D220},
         //{"FoxUiModelNodeSetColorA", 0x14D71CFA0},
         {"TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject", 0x140fe7a80},
+        {"TppGmSoldier2SetEnabled", 0x1414e6b30},
 
         {"lua_pushinteger", 0x14c1e6ef0},
         {"lua_pushstring", 0x14c1e7ee0},

@@ -196,10 +196,12 @@ namespace Dynamite {
     int luaL_loadbufferHook(lua_State *L, const char *buff, size_t sz, const char *name);
     int luaL_loadfileHook(lua_State *L, const char *filename);
 
-    void FoxCCCharacterControlUpdatePositionHook(void *this_, __m128 *outPosition, __m128 *delta);
+    void FoxCCCharacterControlUpdatePositionHook(void *_this, __m128 *outPosition, __m128 *delta);
     __int64 SetGameObjectIdToCharaControlHook(void *_this, int a2, unsigned __int16 a3);
     void TppGameSequenceUpdateHook(int64_t param);
     void FirstPartyP2pConnectionManagerUpdateHook(int64_t param);
+    bool SessionImpl2IsHostHook(void *_this);
+    void FoxNioImplSteamUdpSocketImplUpdateHook(void *_this);
 }
 
 #endif // HOOK_DYNAMITEHOOK_H

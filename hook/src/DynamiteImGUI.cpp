@@ -64,8 +64,8 @@ namespace Dynamite {
 
         g_hook->cfg.Host ? DrawHostMenu() : DrawClientMenu();
 
-        if (ImGui::Button("Test Function"))
-            g_hook->dynamiteCore.AddUIEvent(Event::TestFunction);
+        //if (ImGui::Button("Test Function"))
+        //    g_hook->dynamiteCore.AddUIEvent(Event::TestFunction);
 
         ImGui::End();
 
@@ -73,8 +73,25 @@ namespace Dynamite {
 
     void Dynamite::DrawHostMenu()
     {
-        if (ImGui::Button("Load Mission Manually"))
-            g_hook->dynamiteCore.AddUIEvent(Event::LoadMission);
+        if (g_hook->dynamiteCore.IsHostWorking())
+        {
+            if (ImGui::Button("Stop Host"))
+                g_hook->dynamiteCore.StopSteamtHost();
+        }
+        else
+        {
+            if (ImGui::Button("Start Host"))
+                g_hook->dynamiteCore.StartSteamtHost();
+        }
+
+        if (ImGui::Button("Load Mission Manually")) {
+            g_hook->dynamiteCore.LoadMission(10040);
+           //Packet p;
+           //p.Start(PacketType::NET_MISSION_START);
+           //p.Write<short>(10040);
+           //g_hook->dynamiteCore.SendLocalMessage(p);
+            // g_hook->dynamiteCore.AddUIEvent(Event::LoadMission);
+        }
 
         ImGui::Text("Status: ");
         ImGui::SameLine();
@@ -88,71 +105,31 @@ namespace Dynamite {
     {
         ImGui::Text("Status: ");
         ImGui::SameLine();
-        if (g_hook->dynamiteCore.GetSessionCreated()) {
-            g_hook->dynamiteCore.GetSessionConnected() ? ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, "Connected")
-                                                       : ImGui::TextColored({1.0f, 1.0f, 0.0f, 1.0f}, "Connecting...");
-        }
-        else
+        const auto connected = g_hook->dynamiteCore.GetSessionConnected();
+        connected ? ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, "Connected")
+                                                   : ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, "Disconnected");
+        
+        static char buf[64] = "26.81.120.146";
+
+        ImGui::InputText("IP Address", buf, 64, ImGuiInputTextFlags_CharsScientific);
+
+        if (connected)
         {
-            ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, "Disconnected");
-        }
-
-        const int friendsCount = GetSteamFriendsCount();
-        static uint64_t selectedFriendSteamId = 0;
-        uint64_t prevSelectedFriendSteamId = selectedFriendSteamId;
-        if (friendsCount > 0) {
-            if (ImGui::TreeNode("Friend list")) {
-                static int selected = -1;
-                for (int n = 0; n < friendsCount; n++) {
-
-                    uint64_t friendSteamID = GetSteamFriendByIndex(n);
-                    if (friendSteamID < 0)
-                        continue;
-
-                    const char *pName = GetSteamFriendPersonaName(friendSteamID);
-                    if (ImGui::Selectable(pName, selected == n)) {
-                        selected = n;
-                        selectedFriendSteamId = friendSteamID;
-                    }
-                }
-                ImGui::TreePop();
-            }
-        }
-
-        static char buf[64];
-        static bool isHostCopied = false;
-
-        if (selectedFriendSteamId != prevSelectedFriendSteamId) {
-            g_hook->cfg.HostSteamID = selectedFriendSteamId;
-            isHostCopied = false;
-        }
-
-        if (!isHostCopied) {
-            if (g_hook->cfg.HostSteamID > 0)
-                std::to_chars(buf, buf + sizeof(buf), g_hook->cfg.HostSteamID);
-
-            isHostCopied = true;
-        }
-
-        if (ImGui::InputText("Host SteamID", buf, 64, ImGuiInputTextFlags_CharsDecimal)) {
-            uint64_t steamID = std::stoull(buf);
-            if (steamID >= 0x110000100000000 && steamID <= 0x01100001FFFFFFFF) {
-                g_hook->cfg.HostSteamID = steamID;
-            }
-        }
-
-        if (g_hook->dynamiteCore.GetSessionCreated())
-        {
-            if (ImGui::Button("Cancel Connection"))
-                g_hook->dynamiteCore.AddUIEvent(Event::ResetConnect);
-                //l_ResetClientSessionStateWithNotification(hookState.luaState);
-        } 
-        else 
+            if (ImGui::Button("Disconnect"))
+                g_hook->dynamiteCore.StopSteamClient();
+        } else 
         {
             if (ImGui::Button("Connect")) {
+                Packet p;
+                p.Start(PacketType::NET_CONNECT);
+                p.WriteString(buf);
+                g_hook->dynamiteCore.SendLocalMessage(p);
                 l_CreateClientSession(hookState.luaState);
-                //g_hook->dynamiteCore.AddUIEvent(Event::Connect);
             }
+        }
+
+        if (ImGui::Button("Load Mission Manually")) {
+            g_hook->dynamiteCore.LoadMission(10040);
         }
     }
 

@@ -379,6 +379,12 @@ namespace Dynamite {
         CREATE_HOOK(luaL_loadfile)
         ENABLEHOOK(luaL_loadfile)
 
+        CREATE_HOOK(SessionImpl2IsHost)
+        ENABLEHOOK(SessionImpl2IsHost)
+
+        CREATE_HOOK(FoxNioImplSteamUdpSocketImplUpdate)
+        ENABLEHOOK(FoxNioImplSteamUdpSocketImplUpdate)
+
         // clang-format off
         {
             // these must go together to keep track of bytes written
@@ -410,6 +416,8 @@ namespace Dynamite {
             ShowMessageBox(msg, "Dynamite error", MB_ICONERROR);
             exit(1);
         }
+
+        PatchSteamNetworking();
 
         spdlog::info("{}, done", __FUNCSIG__);
     }

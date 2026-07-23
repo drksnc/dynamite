@@ -272,5 +272,6 @@ namespace Dynamite {
         FoxUiModelNodeSetColorA = (FoxUiModelNodeSetColorAFunc *)addressSet["FoxUiModelNodeSetColorA"];
         TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject =
             (TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObjectFunc *)addressSet["TppGmPlayerImplUiControllerImplGetReticleColorTypeOfGameObject"];
+        FoxNioImplSteamUdpSocketImplUpdate = (FoxNioImplSteamUdpSocketImplUpdateFunc *)addressSet["FoxNioImplSteamUdpSocketImplUpdate"];
     }
 }

@@ -218,3 +218,4 @@ lua_CFunction l_AnnounceLogView;
 lua_CFunction TppUiUiCommandAnnounceLogViewLangId;
 FoxLuaPushVector3Func *FoxLuaPushVector3;
 FoxLuaPushQuatFunc *FoxLuaPushQuat;
+FoxNioImplSteamUdpSocketImplUpdateFunc *FoxNioImplSteamUdpSocketImplUpdate;
